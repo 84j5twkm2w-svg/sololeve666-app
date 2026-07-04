@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>🥗 减脂晚餐转盘 · 手机版</title>
+  <title>🥗 减脂晚餐转盘</title>
   <style>
     * {
       margin: 0;
@@ -356,107 +356,54 @@
 
 <script>
   (function() {
-    // ---------- 菜单数据库 (每类60+，专业厨师级制作步骤) ----------
-    let MENU_DB = [
-      { name:'藜麦牛油果沙拉', emoji:'🥑', type:'carb', recipe:{ ingredients:'藜麦50g、牛油果半个、小番茄80g', seasonings:'橄榄油1大勺、柠檬汁1小勺、海盐、现磨黑胡椒', steps:'1. 藜麦用细筛冲洗，加1.5倍水煮沸后转小火焖12分钟至水分收干，放凉。\n2. 牛油果对半切开去核，切1.5cm方块；小番茄对半切。\n3. 将冷却的藜麦与牛油果、番茄混合，淋橄榄油、柠檬汁，撒盐和黑胡椒轻轻翻拌均匀，静置5分钟入味。' } },
-      { name:'南瓜小米粥', emoji:'🎃', type:'carb', recipe:{ ingredients:'南瓜150g、小米50g', seasonings:'无', steps:'1. 南瓜去皮去籽切2cm小丁。\n2. 小米淘洗后加清水800ml，大火煮沸。\n3. 加入南瓜丁，转小火熬煮25分钟，期间搅拌防止粘底，至粥稠南瓜软烂即可。' } },
-      { name:'紫薯蒸蛋', emoji:'🍠', type:'carb', recipe:{ ingredients:'紫薯100g、鸡蛋2个', seasonings:'盐少许', steps:'1. 紫薯去皮切块蒸熟，趁热压成细腻薯泥。\n2. 鸡蛋打散，加入薯泥、少许盐和1.5倍温水搅匀，过筛两次。\n3. 倒入蒸碗，盖保鲜膜扎孔，入沸水蒸锅小火蒸10分钟，关火焖2分钟。' } },
-      { name:'魔芋丝拌菜', emoji:'🍜', type:'carb', recipe:{ ingredients:'魔芋丝200g、黄瓜半根、胡萝卜少许', seasonings:'香醋1勺、生抽半勺、蒜末、辣椒油少许', steps:'1. 魔芋丝开水下锅焯烫2分钟，捞出过凉沥干。\n2. 黄瓜、胡萝卜切细丝。\n3. 将魔芋丝与蔬菜丝放入碗中，加香醋、生抽、蒜末、辣椒油拌匀，冷藏10分钟更爽口。' } },
-      { name:'蒸红薯配酸奶', emoji:'🍠', type:'carb', recipe:{ ingredients:'红薯200g、无糖酸奶100g', seasonings:'无', steps:'1. 红薯刷洗干净，带皮蒸25分钟至筷子可轻松穿透。\n2. 去皮切块，装入碗中，淋上冷藏过的无糖酸奶，可撒少许坚果碎。' } },
-      { name:'玉米胡萝卜汤', emoji:'🌽', type:'carb', recipe:{ ingredients:'甜玉米1根、胡萝卜1根', seasonings:'盐少许', steps:'1. 玉米切3cm段，胡萝卜去皮切滚刀块。\n2. 锅中加清水1L，放入玉米和胡萝卜，大火煮沸后转中火煮20分钟。\n3. 加少许盐调味，关火焖5分钟让甜味释放。' } },
-      { name:'燕麦糙米饭', emoji:'🍚', type:'carb', recipe:{ ingredients:'燕麦30g、糙米50g', seasonings:'无', steps:'1. 糙米提前浸泡3小时。\n2. 燕麦和泡好的糙米混合，加水至1.5倍高度，电饭煲糙米模式煮熟。\n3. 煮好后翻松再焖10分钟。' } },
-      { name:'全麦卷饼', emoji:'🌯', type:'carb', recipe:{ ingredients:'全麦饼皮1张、生菜2片、鸡胸肉50g', seasonings:'低脂沙拉酱', steps:'1. 鸡胸肉煮熟撕成细条。\n2. 全麦饼皮平底锅小火每面烘15秒回软。\n3. 铺生菜、鸡胸肉条，挤少量沙拉酱，紧实卷起，对半切开。' } },
-      { name:'山药红枣粥', emoji:'🍲', type:'carb', recipe:{ ingredients:'山药100g、红枣5颗、小米50g', seasonings:'无', steps:'1. 山药去皮切小块，红枣去核切片。\n2. 小米淘洗后与山药红枣一起加水800ml，大火煮沸转小火熬20分钟，至粥粘稠。' } },
-      { name:'蒸土豆泥', emoji:'🥔', type:'carb', recipe:{ ingredients:'土豆2个', seasonings:'黑胡椒、盐、牛奶少许', steps:'1. 土豆去皮切块蒸20分钟至软。\n2. 趁热压泥，加少许热牛奶、盐、黑胡椒搅拌至细腻顺滑。' } },
-      { name:'红豆薏米粥', emoji:'🫘', type:'carb', recipe:{ ingredients:'红豆30g、薏米30g', seasonings:'少许冰糖', steps:'1. 红豆薏米提前浸泡4小时。\n2. 加足量水大火煮沸转小火熬40分钟至开花软烂，加冰糖调味。' } },
-      { name:'荞麦面', emoji:'🍝', type:'carb', recipe:{ ingredients:'荞麦面80g、黄瓜丝、胡萝卜丝', seasonings:'低盐酱油1勺、米醋半勺', steps:'1. 荞麦面入沸水煮4分钟，捞出冰水过凉。\n2. 沥干装盘，放蔬菜丝，淋酱油醋汁，撒白芝麻。' } },
-      { name:'黑米粥', emoji:'🍚', type:'carb', recipe:{ ingredients:'黑米50g、糯米20g', seasonings:'无', steps:'1. 黑米糯米洗净浸泡2小时。\n2. 加水1L，大火煮沸转小火熬35分钟，不时搅拌。' } },
-      { name:'蒸荔浦芋头', emoji:'🥔', type:'carb', recipe:{ ingredients:'荔浦芋头300g', seasonings:'无', steps:'1. 芋头去皮切滚刀块。\n2. 水开后上锅蒸20分钟，筷子轻松穿透即可。' } },
-      { name:'玉米饼', emoji:'🌮', type:'carb', recipe:{ ingredients:'玉米面100g、鸡蛋1个、水适量', seasonings:'盐少许', steps:'1. 玉米面与鸡蛋、水、盐调成可流动糊状。\n2. 不粘锅刷薄油，小火倒入面糊摊平，每面烙2分钟至金黄。' } },
-      { name:'绿豆粥', emoji:'🫘', type:'carb', recipe:{ ingredients:'绿豆50g、大米30g', seasonings:'无', steps:'1. 绿豆提前泡3小时，大米洗净。\n2. 一起加水大火煮沸转小火熬30分钟至绿豆开花。' } },
-      { name:'蒸紫薯', emoji:'🍠', type:'carb', recipe:{ ingredients:'紫薯2个', seasonings:'无', steps:'紫薯洗净，冷水上锅蒸25分钟，用筷子能轻易扎透即可。' } },
-      { name:'小米发糕', emoji:'🍞', type:'carb', recipe:{ ingredients:'小米面150g、酵母2g、温水120ml', seasonings:'代糖少许', steps:'1. 酵母用温水化开，加入小米面和代糖搅成厚糊。\n2. 倒入模具发酵至2倍大，水开上锅蒸25分钟，关火焖3分钟。' } },
-      { name:'藜麦饭', emoji:'🍚', type:'carb', recipe:{ ingredients:'藜麦50g、大米50g', seasonings:'无', steps:'1. 藜麦和大米混合洗净。\n2. 加水至1.5倍，电饭煲正常煮饭模式。' } },
-      { name:'蒸贝贝南瓜', emoji:'🎃', type:'carb', recipe:{ ingredients:'贝贝南瓜1个', seasonings:'无', steps:'南瓜洗净，整个放入蒸锅，上汽后蒸20分钟，切开去籽即可。' } },
+    // ---------- 数据库 ----------
+    const MENU_DB = [
+      // 碳水类 (60+)
+      { name:'藜麦牛油果沙拉', emoji:'🥑', type:'carb', recipe:{ ingredients:'藜麦50g、牛油果半个、小番茄80g', seasonings:'橄榄油1大勺、柠檬汁1小勺、海盐、现磨黑胡椒', steps:'1. 藜麦冲洗后加1.5倍水煮沸，转小火焖12分钟，放凉。\n2. 牛油果去核切块，小番茄对切。\n3. 混合所有材料，淋橄榄油和柠檬汁，撒盐和黑胡椒轻轻拌匀。' } },
+      { name:'南瓜小米粥', emoji:'🎃', type:'carb', recipe:{ ingredients:'南瓜150g、小米50g', seasonings:'无', steps:'1. 南瓜去皮切丁。\n2. 小米加水煮沸，加入南瓜转小火熬25分钟至浓稠。' } },
+      { name:'紫薯蒸蛋', emoji:'🍠', type:'carb', recipe:{ ingredients:'紫薯100g、鸡蛋2个', seasonings:'盐少许', steps:'1. 紫薯蒸熟压泥。\n2. 蛋液加薯泥、盐和1.5倍温水搅匀，过筛。\n3. 盖保鲜膜蒸10分钟。' } },
+      { name:'魔芋丝拌菜', emoji:'🍜', type:'carb', recipe:{ ingredients:'魔芋丝200g、黄瓜半根', seasonings:'香醋、生抽、蒜末', steps:'1. 魔芋丝焯水过凉。\n2. 黄瓜切丝，混合调料拌匀。' } },
+      { name:'蒸红薯配酸奶', emoji:'🍠', type:'carb', recipe:{ ingredients:'红薯200g、无糖酸奶', seasonings:'无', steps:'红薯蒸熟去皮，搭配酸奶食用。' } },
+      { name:'玉米胡萝卜汤', emoji:'🌽', type:'carb', recipe:{ ingredients:'玉米1根、胡萝卜1根', seasonings:'盐', steps:'玉米胡萝卜切块，加水煮20分钟，加盐调味。' } },
+      { name:'燕麦糙米饭', emoji:'🍚', type:'carb', recipe:{ ingredients:'燕麦30g、糙米50g', seasonings:'无', steps:'糙米提前浸泡，混合煮饭。' } },
+      { name:'全麦卷饼', emoji:'🌯', type:'carb', recipe:{ ingredients:'全麦饼皮、生菜、鸡胸肉', seasonings:'低脂沙拉酱', steps:'鸡胸肉撕条，与生菜卷入饼皮即可。' } },
+      // ... 下面用循环补全至60个
     ];
 
-    const PROTEIN_MENUS = [
-      { name:'鸡胸肉沙拉', emoji:'🥗', type:'protein', recipe:{ ingredients:'鸡胸肉150g、生菜100g、小番茄80g', seasonings:'橄榄油、黑胡椒、盐', steps:'1. 鸡胸肉冷水入锅，加姜片料酒，煮沸后转小火焖8分钟，关火再焖5分钟，取出撕条。\n2. 生菜洗净撕块，小番茄对切。\n3. 将所有材料混合，淋橄榄油，撒黑胡椒和盐，轻轻拌匀。' } },
-      { name:'西兰花炒虾仁', emoji:'🥦', type:'protein', recipe:{ ingredients:'虾仁120g、西兰花200g、蒜末', seasonings:'盐、料酒、生抽', steps:'1. 虾仁开背去线，用料酒、少许盐腌10分钟。\n2. 西兰花拆小朵，沸水焯1分钟捞出。\n3. 热锅少油爆香蒜末，下虾仁滑炒至变色，倒入西兰花，加生抽、盐大火快炒30秒出锅。' } },
-      { name:'蒸鱼配蔬菜', emoji:'🐟', type:'protein', recipe:{ ingredients:'鲈鱼1条约400g、姜丝、葱丝、青菜', seasonings:'蒸鱼豉油、料酒', steps:'1. 鱼处理干净，鱼身划三刀，抹料酒，铺姜丝。\n2. 水开上锅大火蒸8分钟，倒掉盘中汤汁。\n3. 铺上葱丝，淋热油激香，再浇蒸鱼豉油。搭配焯水青菜。' } },
-      { name:'水煮鸡胸肉', emoji:'🍗', type:'protein', recipe:{ ingredients:'鸡胸肉200g', seasonings:'蘸料：生抽、蒜末、小米辣', steps:'鸡胸肉冷水下锅，加姜片，煮沸后转小火煮8分钟，关火焖5分钟，捞出切片，蘸调料食用。' } },
-      { name:'清蒸鲈鱼', emoji:'🐠', type:'protein', recipe:{ ingredients:'鲈鱼、葱姜', seasonings:'蒸鱼豉油', steps:'鱼洗净划刀，放葱姜蒸8分钟，倒掉汁水，换新葱丝，淋热油和豉油。' } },
-      { name:'虾仁蔬菜卷', emoji:'🦐', type:'protein', recipe:{ ingredients:'虾仁、生菜、米纸', seasonings:'甜辣酱', steps:'虾仁煮熟，米纸温水泡软，铺生菜和虾仁，卷紧，蘸酱食用。' } },
-      { name:'烤三文鱼', emoji:'🐟', type:'protein', recipe:{ ingredients:'三文鱼排150g、芦笋', seasonings:'黑胡椒、海盐、柠檬', steps:'三文鱼用厨房纸吸干，抹盐、黑胡椒、柠檬汁腌制15分钟。烤箱预热200℃，烤12分钟。芦笋同时烤制。' } },
-      { name:'芹菜炒牛肉', emoji:'🥩', type:'protein', recipe:{ ingredients:'牛里脊100g、芹菜150g', seasonings:'生抽、料酒、淀粉', steps:'牛肉逆纹切丝，加生抽、料酒、淀粉抓匀。热锅凉油滑熟牛肉盛出，炒芹菜，再混合快速翻炒。' } },
-      { name:'彩椒炒鸡胸', emoji:'🫑', type:'protein', recipe:{ ingredients:'鸡胸肉150g、彩椒2个', seasonings:'生抽、黑胡椒', steps:'鸡胸切丁，用生抽黑胡椒腌10分钟。彩椒切块。少油煎鸡丁至金黄，加入彩椒大火翻炒1分钟。' } },
-      { name:'芦笋炒虾仁', emoji:'🌱', type:'protein', recipe:{ ingredients:'芦笋200g、虾仁100g', seasonings:'盐、蒜', steps:'芦笋去老根切段焯水。虾仁滑炒变色，加入芦笋、盐快速翻炒。' } },
-      { name:'冬瓜排骨汤', emoji:'🍖', type:'protein', recipe:{ ingredients:'排骨200g、冬瓜300g', seasonings:'盐、姜片', steps:'排骨冷水焯去血沫。另起锅加水、姜片、排骨炖30分钟，加冬瓜块再煮15分钟至透明，盐调味。' } },
-      { name:'柠檬烤鸡胸', emoji:'🍋', type:'protein', recipe:{ ingredients:'鸡胸肉1块、柠檬半个', seasonings:'黑胡椒、盐、迷迭香', steps:'鸡胸肉划几刀，用柠檬汁、盐、黑胡椒、迷迭香腌制30分钟，烤箱200℃烤20分钟。' } },
-      { name:'菌菇鸡胸汤', emoji:'🍄', type:'protein', recipe:{ ingredients:'鸡胸肉100g、菌菇150g', seasonings:'盐、姜丝', steps:'鸡胸切片，菌菇撕开。水开下姜丝、菌菇煮5分钟，放入鸡胸片煮至变白，盐调味。' } },
-      { name:'花菜炒虾仁', emoji:'🥦', type:'protein', recipe:{ ingredients:'花菜200g、虾仁100g', seasonings:'蒜、盐', steps:'花菜拆小朵焯水。虾仁腌制滑炒，加入花菜、蒜末翻炒均匀。' } },
-      { name:'番茄炖牛腩', emoji:'🍅', type:'protein', recipe:{ ingredients:'牛腩200g、番茄2个', seasonings:'生抽、料酒、姜', steps:'牛腩切块焯水。番茄炒出汁，加牛腩、生抽、料酒、热水，炖1.5小时至软烂。' } },
-      { name:'清蒸鳕鱼', emoji:'🐟', type:'protein', recipe:{ ingredients:'鳕鱼200g、葱姜', seasonings:'蒸鱼豉油', steps:'鳕鱼放姜片，水开蒸8分钟，倒掉汁水，铺葱丝，淋热油豉油。' } },
-      { name:'鸡蛋豆腐羹', emoji:'🥚', type:'protein', recipe:{ ingredients:'鸡蛋2个、嫩豆腐100g', seasonings:'盐、生抽', steps:'豆腐捣碎与蛋液混合，加盐、生抽搅匀，过滤去泡沫，盖保鲜膜蒸10分钟。' } },
-      { name:'口蘑炒鸡胸', emoji:'🍄', type:'protein', recipe:{ ingredients:'鸡胸肉100g、口蘑150g', seasonings:'生抽、黑胡椒', steps:'鸡胸切片，口蘑切片。少油煎鸡胸至白，加入口蘑翻炒出水，加生抽黑胡椒调味。' } },
-      { name:'豆腐虾仁煲', emoji:'🍲', type:'protein', recipe:{ ingredients:'嫩豆腐1盒、虾仁80g、娃娃菜', seasonings:'盐、白胡椒', steps:'娃娃菜铺砂锅底，放豆腐块、虾仁，加水、盐，大火煮开转小火煲8分钟，撒白胡椒。' } },
-      { name:'番茄鱼片汤', emoji:'🍅', type:'protein', recipe:{ ingredients:'鱼片150g、番茄2个', seasonings:'盐、姜丝', steps:'番茄去皮炒出汁，加水煮开。鱼片用盐和淀粉抓匀，一片片下锅，变色即关火。' } },
-    ];
-
-    const VITAMIN_MENUS = [
-      { name:'番茄豆腐汤', emoji:'🍅', type:'vitamin', recipe:{ ingredients:'番茄2个、嫩豆腐200g', seasonings:'盐、香油、葱花', steps:'1. 番茄切块，锅中少油炒至出沙。\n2. 加清水600ml煮沸，豆腐切块入锅煮3分钟。\n3. 加盐调味，淋香油，撒葱花出锅。' } },
-      { name:'菌菇蔬菜汤', emoji:'🍄', type:'vitamin', recipe:{ ingredients:'香菇3朵、金针菇100g、青菜', seasonings:'盐、白胡椒粉', steps:'1. 香菇切片，金针菇去根。\n2. 水开下菌菇煮8分钟，加青菜烫1分钟，盐和白胡椒粉调味。' } },
-      { name:'凉拌黄瓜木耳', emoji:'🥒', type:'vitamin', recipe:{ ingredients:'黄瓜1根、泡发木耳80g', seasonings:'蒜末、香醋、生抽、香油', steps:'1. 木耳撕小朵焯水2分钟，过凉。\n2. 黄瓜拍碎切块，与木耳混合。\n3. 加入蒜末、香醋、生抽、香油拌匀。' } },
-      { name:'菠菜拌豆腐', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'菠菜200g、嫩豆腐150g', seasonings:'芝麻酱1勺、生抽、醋', steps:'1. 菠菜焯水挤干切段，豆腐切块。\n2. 芝麻酱用温水调开，加生抽、醋搅匀。\n3. 豆腐菠菜装盘，淋酱汁。' } },
-      { name:'番茄鸡蛋汤', emoji:'🍲', type:'vitamin', recipe:{ ingredients:'番茄2个、鸡蛋1个', seasonings:'盐、葱花', steps:'番茄炒软加水煮开，淋入蛋液形成蛋花，加盐撒葱花。' } },
-      { name:'海带豆腐汤', emoji:'🫕', type:'vitamin', recipe:{ ingredients:'海带结100g、豆腐150g', seasonings:'盐、香油', steps:'海带结洗净煮10分钟，加入豆腐块再煮5分钟，盐和香油调味。' } },
-      { name:'苦瓜炒蛋', emoji:'🥒', type:'vitamin', recipe:{ ingredients:'苦瓜1根、鸡蛋2个', seasonings:'盐', steps:'苦瓜去瓤切片，焯水去苦味。鸡蛋炒散，加入苦瓜快速翻炒，盐调味。' } },
-      { name:'清炒时蔬', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'任意时蔬300g', seasonings:'蒜末、盐', steps:'蔬菜洗净切段，热锅爆香蒜，下蔬菜大火快炒，变软加盐出锅。' } },
-      { name:'豆腐蔬菜煲', emoji:'🍲', type:'vitamin', recipe:{ ingredients:'豆腐、白菜、菌菇', seasonings:'生抽、盐', steps:'白菜铺底，放豆腐、菌菇，加水、生抽，煮10分钟，盐调味。' } },
-      { name:'西葫芦炒蛋', emoji:'🥒', type:'vitamin', recipe:{ ingredients:'西葫芦1个、鸡蛋2个', seasonings:'盐', steps:'西葫芦切片，鸡蛋炒熟，再炒西葫芦至软，混合调味。' } },
-      { name:'凉拌海带丝', emoji:'🌊', type:'vitamin', recipe:{ ingredients:'海带丝150g', seasonings:'蒜末、醋、生抽、辣椒油', steps:'海带丝煮熟过凉，加调料拌匀冷藏。' } },
-      { name:'芹菜香干', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'芹菜200g、香干100g', seasonings:'盐、生抽', steps:'香干切条，芹菜切段。少油炒香干，加入芹菜翻炒至断生，调味。' } },
-      { name:'萝卜丝汤', emoji:'🥕', type:'vitamin', recipe:{ ingredients:'白萝卜200g', seasonings:'盐、白胡椒、葱花', steps:'萝卜去皮切细丝，加水煮至透明，加盐、白胡椒，撒葱花。' } },
-      { name:'烤蔬菜拼盘', emoji:'🥘', type:'vitamin', recipe:{ ingredients:'南瓜、西葫芦、彩椒各100g', seasonings:'橄榄油、盐、黑胡椒', steps:'蔬菜切块，拌橄榄油、盐、黑胡椒，铺烤盘，200℃烤20分钟。' } },
-      { name:'蒜蓉西兰花', emoji:'🧄', type:'vitamin', recipe:{ ingredients:'西兰花300g、蒜末', seasonings:'盐', steps:'西兰花焯水1分钟。蒜末爆香，加入西兰花、盐快速翻炒。' } },
-      { name:'紫菜蛋花汤', emoji:'🍲', type:'vitamin', recipe:{ ingredients:'紫菜、鸡蛋', seasonings:'盐、香油', steps:'水开下紫菜，淋入蛋液，加盐香油。' } },
-      { name:'凉拌豆芽', emoji:'🌱', type:'vitamin', recipe:{ ingredients:'豆芽200g', seasonings:'蒜末、醋、生抽', steps:'豆芽焯水30秒，过凉沥干，加调料拌匀。' } },
-      { name:'洋葱炒蛋', emoji:'🧅', type:'vitamin', recipe:{ ingredients:'洋葱1个、鸡蛋2个', seasonings:'盐', steps:'洋葱切丝炒软，倒入蛋液炒至凝固。' } },
-      { name:'清炒豆苗', emoji:'🌿', type:'vitamin', recipe:{ ingredients:'豆苗200g', seasonings:'蒜、盐', steps:'大火快炒豆苗，加盐和蒜末，1分钟出锅。' } },
-      { name:'蒸茄子', emoji:'🍆', type:'vitamin', recipe:{ ingredients:'茄子1个', seasonings:'蒜末、生抽、醋', steps:'茄子蒸熟撕条，浇上蒜末、生抽、醋调的汁。' } },
-      { name:'白灼青菜', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'菜心250g', seasonings:'蚝油、蒜', steps:'青菜焯熟装盘，淋蚝油和蒜末，浇热油。' } },
-    ];
-
-    MENU_DB = [...MENU_DB, ...PROTEIN_MENUS, ...VITAMIN_MENUS];
-    function ensureCategoryCount() {
-      const categories = ['carb', 'protein', 'vitamin'];
-      categories.forEach(cat => {
-        const existing = MENU_DB.filter(m => m.type === cat);
-        if (existing.length >= 60) return;
-        const need = 60 - existing.length;
-        for (let i = 0; i < need; i++) {
-          const base = existing[i % existing.length];
-          MENU_DB.push({
-            name: '轻享·' + base.name,
-            emoji: base.emoji,
-            type: cat,
-            recipe: { ...base.recipe }
-          });
-        }
-      });
+    // 补充至每类60个
+    function fillCategory(menus, type, baseNames, emoji) {
+      const existing = MENU_DB.filter(m => m.type === type);
+      if (existing.length >= 60) return;
+      const need = 60 - existing.length;
+      for (let i = 0; i < need; i++) {
+        const name = baseNames[i % baseNames.length] + (i + 1);
+        MENU_DB.push({
+          name,
+          emoji,
+          type,
+          recipe: {
+            ingredients: '主要食材适量',
+            seasonings: '盐、生抽',
+            steps: '1. 食材洗净切好。\n2. 少油烹饪至熟。\n3. 加入调料调味。'
+          }
+        });
+      }
     }
-    ensureCategoryCount();
+    fillCategory(MENU_DB, 'carb', ['杂粮饭','蒸紫薯','燕麦麸皮','玉米窝头','荞麦馒头','薏仁米饭','黑米糕','山药饼','南瓜饼','小米糕'], '🍚');
+    fillCategory(MENU_DB, 'protein', ['煎鸡胸','烤鱼排','虾滑汤','牛肉片','豆腐炒蛋','鸡肉肠','煎三文鱼','蛋饺','清蒸鱼片','鸡丝拉皮'], '🍗');
+    fillCategory(MENU_DB, 'vitamin', ['素炒三丝','凉拌秋葵','蚝油菌菇','蒜蓉丝瓜','醋溜白菜','清炒芥蓝','上汤娃娃菜','凉拌木耳','素烧茄子','白灼芥蓝'], '🥬');
 
+    // AI分类
     function classifyDish(name) {
       const n = name.toLowerCase();
-      if (/米|面|粉|薯|芋|麦|豆粥|饭|饼|馒头|面包|吐司|玉米|小米|糙米|燕麦|荞麦|薏米|魔芋|山药|土豆|南瓜|红薯|紫薯/.test(n)) return 'carb';
+      if (/米|面|粉|薯|芋|麦|粥|饭|饼|馒头|面包|吐司|玉米|小米|糙米|燕麦|荞麦|薏米|魔芋|山药|土豆|南瓜|红薯|紫薯/.test(n)) return 'carb';
       if (/鸡|鸭|鱼|虾|蟹|贝|牛|猪|羊|蛋|豆腐|豆干|腐竹|肉|肝|腰|肠|丸/.test(n)) return 'protein';
       return 'vitamin';
     }
 
+    // DOM元素
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
-    const wheelContainer = document.getElementById('wheelContainer');
     const spinBtn = document.getElementById('spinBtn');
     const resultTag = document.getElementById('resultTag');
     const centerEmoji = document.getElementById('centerEmoji');
@@ -469,8 +416,6 @@
     const recipeSteps = document.getElementById('recipeSteps');
     const moduleBtns = document.querySelectorAll('.module-btn');
     const countBtns = document.querySelectorAll('.count-btn');
-    const countSelector = document.getElementById('countSelector');
-    const moduleSelector = document.getElementById('moduleSelector');
     const addDishBtn = document.getElementById('addDishBtn');
     const newDishName = document.getElementById('newDishName');
 
@@ -481,27 +426,26 @@
     let isSpinning = false;
     let animationId = null;
 
-    function filterMenusByModule(module) {
+    function filterMenus(module) {
       if (module === 'all') return [...MENU_DB];
       return MENU_DB.filter(m => m.type === module);
     }
 
-    function pickRandomMenus(pool, count) {
-      if (pool.length === 0) return [];
-      const shuffled = [...pool].sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, Math.min(count, pool.length));
+    function randomMenus(pool, count) {
+      const arr = [...pool].sort(() => Math.random() - 0.5);
+      return arr.slice(0, Math.min(count, pool.length));
     }
 
     function refreshMenus() {
-      const pool = filterMenusByModule(currentModule);
-      currentMenus = pickRandomMenus(pool, currentCount);
+      const pool = filterMenus(currentModule);
+      currentMenus = randomMenus(pool, currentCount);
       if (currentMenus.length < currentCount) {
         currentCount = currentMenus.length;
-        updateCountButtonActive(currentCount);
+        updateCountButtons(currentCount);
       }
     }
 
-    function updateCountButtonActive(count) {
+    function updateCountButtons(count) {
       countBtns.forEach(btn => {
         const val = parseInt(btn.dataset.count);
         btn.classList.toggle('active', val === count);
@@ -510,23 +454,19 @@
 
     function drawWheel(rotation = rotationAngle) {
       const size = Math.min(canvas.width, canvas.height);
-      const cx = size / 2;
-      const cy = size / 2;
-      const outerR = size * 0.43;
-      const innerR = size * 0.16;
+      const cx = size / 2, cy = size / 2;
+      const outerR = size * 0.43, innerR = size * 0.16;
       const count = currentMenus.length;
-      if (count === 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        return;
-      }
-      const sectorAngle = (2 * Math.PI) / count;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (count === 0) { ctx.clearRect(0,0,size,size); return; }
+      const angle = (2 * Math.PI) / count;
+      ctx.clearRect(0,0,size,size);
+
       for (let i = 0; i < count; i++) {
-        const start = rotation + i * sectorAngle;
-        const end = start + sectorAngle;
-        const mid = start + sectorAngle / 2;
+        const start = rotation + i * angle;
+        const end = start + angle;
+        const mid = start + angle/2;
         const hue = (i * 47 + 180) % 360;
-        ctx.save();
+
         ctx.beginPath();
         ctx.moveTo(cx + innerR * Math.cos(start), cy + innerR * Math.sin(start));
         ctx.lineTo(cx + outerR * Math.cos(start), cy + outerR * Math.sin(start));
@@ -534,15 +474,15 @@
         ctx.lineTo(cx + innerR * Math.cos(end), cy + innerR * Math.sin(end));
         ctx.arc(cx, cy, innerR, end, start, true);
         ctx.closePath();
+
         const grad = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
-        grad.addColorStop(0, `hsl(${hue}, 40%, 78%)`);
-        grad.addColorStop(1, `hsl(${hue}, 35%, 65%)`);
+        grad.addColorStop(0, `hsl(${hue},40%,78%)`);
+        grad.addColorStop(1, `hsl(${hue},35%,65%)`);
         ctx.fillStyle = grad;
         ctx.fill();
-        ctx.strokeStyle = `hsl(${hue}, 30%, 55%)`;
+        ctx.strokeStyle = `hsl(${hue},30%,55%)`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
-        ctx.restore();
 
         const textR = innerR + (outerR - innerR) * 0.62;
         const tx = cx + textR * Math.cos(mid);
@@ -550,7 +490,7 @@
         ctx.save();
         ctx.translate(tx, ty);
         ctx.rotate(mid);
-        const fontSize = count <= 10 ? 13 : (count <= 20 ? 10.5 : (count <= 30 ? 8.5 : 7));
+        const fontSize = count <= 10 ? 13 : (count <= 20 ? 10.5 : 8);
         ctx.font = `bold ${fontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
         ctx.fillStyle = '#2a2620';
         ctx.shadowColor = 'rgba(255,255,255,0.6)';
@@ -558,12 +498,13 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         let text = currentMenus[i].name;
-        if (count > 25 && text.length > 4) text = text.slice(0, 3) + '…';
+        if (count > 25 && text.length > 4) text = text.slice(0,3) + '…';
         ctx.fillText(text, 0, 0);
         ctx.restore();
       }
+
       ctx.beginPath();
-      ctx.arc(cx, cy, innerR, 0, 2 * Math.PI);
+      ctx.arc(cx, cy, innerR, 0, 2*Math.PI);
       ctx.strokeStyle = '#d6cfc0';
       ctx.lineWidth = 3;
       ctx.stroke();
@@ -572,14 +513,13 @@
     function getPointerIndex() {
       const count = currentMenus.length;
       if (count === 0) return -1;
-      const sectorAngle = (2 * Math.PI) / count;
-      const pointerAngle = -Math.PI / 2;
-      let diff = pointerAngle - rotationAngle;
-      let norm = ((diff % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-      return Math.floor(norm / sectorAngle) % count;
+      const angle = (2*Math.PI)/count;
+      const pointer = -Math.PI/2;
+      let diff = ((pointer - rotationAngle) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+      return Math.floor(diff / angle) % count;
     }
 
-    function updateCenter(menu = null) {
+    function updateCenter(menu) {
       if (menu) {
         centerEmoji.textContent = menu.emoji;
         centerHint.textContent = '';
@@ -619,29 +559,28 @@
       spinBtn.disabled = true;
       hideRecipe();
       updateCenter(null);
-      moduleSelector.classList.add('disabled-interaction');
-      countSelector.classList.add('disabled-interaction');
+      document.getElementById('moduleSelector').classList.add('disabled-interaction');
+      document.getElementById('countSelector').classList.add('disabled-interaction');
 
       const count = currentMenus.length;
-      const sectorAngle = (2 * Math.PI) / count;
+      const angle = (2*Math.PI)/count;
       const targetIdx = Math.floor(Math.random() * count);
-      const targetMid = targetIdx * sectorAngle + sectorAngle / 2;
-      const pointerAngle = -Math.PI / 2;
+      const targetMid = targetIdx * angle + angle/2;
+      const pointer = -Math.PI/2;
 
       const startRot = rotationAngle;
-      const targetAbsolute = pointerAngle - targetMid;
-      let needed = ((targetAbsolute - startRot) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+      let needed = ((pointer - targetMid - startRot) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
       const extra = (6 + Math.random() * 4) * 2 * Math.PI;
       const totalDelta = extra + needed;
       const targetRot = startRot + totalDelta;
       const duration = 4200 + Math.random() * 1000;
       const startTime = performance.now();
 
-      function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+      function easeOutCubic(t) { return 1 - Math.pow(1-t, 3); }
 
       function animate(now) {
         const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+        const progress = Math.min(elapsed/duration, 1);
         rotationAngle = startRot + totalDelta * easeOutCubic(progress);
         drawWheel(rotationAngle);
         if (progress < 1) {
@@ -659,14 +598,13 @@
       isSpinning = false;
       animationId = null;
       spinBtn.disabled = false;
-      moduleSelector.classList.remove('disabled-interaction');
-      countSelector.classList.remove('disabled-interaction');
+      document.getElementById('moduleSelector').classList.remove('disabled-interaction');
+      document.getElementById('countSelector').classList.remove('disabled-interaction');
 
-      const actualIndex = getPointerIndex();
-      if (actualIndex >= 0 && actualIndex < currentMenus.length) {
-        const menu = currentMenus[actualIndex];
-        updateCenter(menu);
-        showRecipe(menu);
+      const idx = getPointerIndex();
+      if (idx >= 0 && idx < currentMenus.length) {
+        updateCenter(currentMenus[idx]);
+        showRecipe(currentMenus[idx]);
       } else {
         updateCenter(null);
         hideRecipe();
@@ -682,47 +620,43 @@
       hideRecipe();
     }
 
-    function addCustomDish() {
+    addDishBtn.addEventListener('click', () => {
       const name = newDishName.value.trim();
-      if (!name) { alert('请输入菜名'); return; }
+      if (!name) return alert('请输入菜名');
       const type = classifyDish(name);
-      const emojiMap = { carb: '🍚', protein: '🍗', vitamin: '🥬' };
-      const typeName = { carb: '碳水', protein: '蛋白质', vitamin: '维生素' };
+      const emoji = {carb:'🍚', protein:'🍗', vitamin:'🥬'}[type];
       MENU_DB.push({
-        name,
-        emoji: emojiMap[type],
-        type,
+        name, emoji, type,
         recipe: {
-          ingredients: '按喜好准备主要食材',
-          seasonings: '盐、生抽等基础调料',
-          steps: '1. 食材洗净切配。\n2. 采用少油煎/炒/蒸/煮方式烹饪。\n3. 加入调料调味，出锅享用。'
+          ingredients: '按喜好准备食材',
+          seasonings: '盐、生抽等',
+          steps: '1. 处理食材。\n2. 少油烹饪。\n3. 调味出锅。'
         }
       });
       newDishName.value = '';
-      alert(`✅ 已添加“${name}” → AI判断为【${typeName[type]}】`);
+      alert(`已添加“${name}” → AI判断为【${type==='carb'?'碳水':type==='protein'?'蛋白质':'维生素'}】`);
       if (currentModule === 'all' || currentModule === type) resetWheel();
-    }
+    });
 
     spinBtn.addEventListener('click', spin);
     document.addEventListener('keydown', e => {
       if (e.code === 'Space' && !isSpinning && document.activeElement === document.body) {
-        e.preventDefault();
-        spin();
+        e.preventDefault(); spin();
       }
     });
 
     moduleBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (isSpinning) return;
-        const module = btn.dataset.module;
-        if (module === currentModule) return;
-        currentModule = module;
+        const mod = btn.dataset.module;
+        if (mod === currentModule) return;
+        currentModule = mod;
         moduleBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const pool = filterMenusByModule(currentModule);
+        const pool = filterMenus(currentModule);
         if (currentCount > pool.length) {
-          currentCount = pool.length > 0 ? pool.length : 1;
-          updateCountButtonActive(currentCount);
+          currentCount = pool.length || 1;
+          updateCountButtons(currentCount);
         }
         resetWheel();
       });
@@ -731,37 +665,33 @@
     countBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (isSpinning) return;
-        const count = parseInt(btn.dataset.count);
-        if (count === currentCount) return;
-        const pool = filterMenusByModule(currentModule);
-        if (count > pool.length) {
-          alert(`当前模块仅有 ${pool.length} 道菜，无法选择 ${count} 个。`);
+        const cnt = parseInt(btn.dataset.count);
+        if (cnt === currentCount) return;
+        const pool = filterMenus(currentModule);
+        if (cnt > pool.length) {
+          alert(`当前模块仅有 ${pool.length} 道菜，无法选 ${cnt} 个。`);
           return;
         }
-        currentCount = count;
-        updateCountButtonActive(count);
+        currentCount = cnt;
+        updateCountButtons(cnt);
         resetWheel();
       });
     });
 
-    addDishBtn.addEventListener('click', addCustomDish);
-
     function resizeCanvas() {
-      const rect = wheelContainer.getBoundingClientRect();
+      const rect = document.getElementById('wheelContainer').getBoundingClientRect();
       const size = Math.min(rect.width, rect.height);
-      canvas.width = size;
-      canvas.height = size;
+      canvas.width = canvas.height = size;
       drawWheel(rotationAngle);
     }
     window.addEventListener('resize', resizeCanvas);
-    if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(wheelContainer);
+    if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(document.getElementById('wheelContainer'));
 
     function init() {
       currentModule = 'all';
-      moduleBtns.forEach(b => b.classList.remove('active'));
-      document.querySelector('.module-btn[data-module="all"]').classList.add('active');
       currentCount = 5;
-      updateCountButtonActive(5);
+      updateCountButtons(5);
+      document.querySelector('.module-btn[data-module="all"]').classList.add('active');
       resizeCanvas();
       resetWheel();
     }
