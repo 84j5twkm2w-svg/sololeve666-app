@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>🥗 减脂晚餐转盘 · 手机版</title>
+  <title>🥗 减脂晚餐转盘</title>
+  
+  <!-- PWA Manifest (内联) -->
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%E5%87%8F%E8%84%82%E6%99%9A%E9%A4%90%E8%BD%AC%E7%9B%98%22%2C%22short_name%22%3A%22%E6%99%9A%E9%A4%90%E8%BD%AC%E7%9B%98%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f9f6f0%22%2C%22theme_color%22%3A%22%236a9f7b%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D'http%253A%2F%2Fwww.w3.org%2F2000%2Fsvg'%2520viewBox%253D'0%25200%2520100%2520100'%253E%253Ctext%2520y%253D'.9em'%2520font-size%253D'90'%253E%25F0%259F%25A5%2597%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+  <meta name="theme-color" content="#6a9f7b">
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -34,6 +39,8 @@
       gap: 10px;
     }
     .title span { font-size: 2.2rem; }
+    
+    /* 模块选择器 */
     .module-selector {
       display: flex;
       background: rgba(255,255,255,0.8);
@@ -61,6 +68,8 @@
       color: white;
       box-shadow: 0 4px 14px rgba(106,159,123,0.4);
     }
+    
+    /* 数量选择器 */
     .count-selector {
       display: flex;
       align-items: center;
@@ -97,6 +106,8 @@
       box-shadow: 0 4px 12px rgba(106,159,123,0.35);
       transform: scale(1.06);
     }
+    
+    /* 转盘 */
     .wheel-container {
       position: relative;
       width: 100%;
@@ -150,6 +161,7 @@
     }
     .center-emoji { font-size: 2.6rem; line-height: 1; }
     .center-hint { font-size: 0.6rem; color: #b3ab9e; margin-top: 2px; }
+    
     .result-tag {
       position: absolute;
       top: 50%; left: 50%;
@@ -169,6 +181,7 @@
       opacity: 1;
       transform: translate(-50%, -50%) translateY(-85px);
     }
+    
     .spin-btn {
       background: #6a9f7b;
       border: none;
@@ -190,6 +203,8 @@
       cursor: not-allowed;
       pointer-events: none;
     }
+    
+    /* 添加区域 */
     .add-section {
       width: 100%;
       background: rgba(255,255,255,0.7);
@@ -219,6 +234,8 @@
       cursor: pointer;
     }
     .ai-hint { font-size: 0.7rem; color: #8b857c; margin-top: 6px; }
+    
+    /* 食谱卡片 */
     .recipe-card {
       width: 100%;
       background: rgba(255,255,255,0.8);
@@ -250,6 +267,7 @@
       border-radius: 16px;
       white-space: pre-line;
     }
+    
     .disabled-interaction { pointer-events: none; opacity: 0.6; }
   </style>
 </head>
@@ -314,7 +332,7 @@
 
 <script>
   (function() {
-    // ---------- 数据库 (每类60+，详细食谱) ----------
+    // ---------- 菜单数据库 (每类至少60种) ----------
     const MENU_DB = [
       // 碳水类基础
       { name:'藜麦牛油果沙拉', emoji:'🥑', type:'carb', recipe:{ ingredients:'藜麦50g、牛油果半个、小番茄80g', seasonings:'橄榄油、柠檬汁、海盐、黑胡椒', steps:'1. 藜麦洗净加水煮12分钟，放凉。\n2. 牛油果番茄切块。\n3. 混合后淋油醋汁，撒盐和胡椒。' } },
@@ -340,7 +358,7 @@
     ];
 
     // 补全至每类至少60个
-    function ensureCategoryCount() {
+    (function ensureCount() {
       const categories = ['carb', 'protein', 'vitamin'];
       const baseNames = {
         carb: ['杂粮饭','蒸紫薯','燕麦麸皮','玉米窝头','荞麦馒头','薏仁米饭','黑米糕','山药饼','南瓜饼','小米糕'],
@@ -359,17 +377,16 @@
             emoji: cat === 'carb' ? '🍚' : (cat === 'protein' ? '🍗' : '🥬'),
             type: cat,
             recipe: {
-              ingredients: '主要食材适量',
+              ingredients: '适量主要食材',
               seasonings: '盐、生抽',
               steps: '1. 处理食材。\n2. 少油烹饪。\n3. 调味出锅。'
             }
           });
         }
       });
-    }
-    ensureCategoryCount();
+    })();
 
-    // AI分类
+    // AI 分类
     function classifyDish(name) {
       const n = name.toLowerCase();
       if (/米|面|粉|薯|芋|麦|粥|饭|饼|馒头|面包|吐司|玉米|小米|糙米|燕麦|荞麦|薏米|魔芋|山药|土豆|南瓜|红薯|紫薯/.test(n)) return 'carb';
@@ -377,7 +394,7 @@
       return 'vitamin';
     }
 
-    // DOM
+    // DOM 元素
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
@@ -394,7 +411,11 @@
     const countBtns = document.querySelectorAll('.count-btn');
     const addDishBtn = document.getElementById('addDishBtn');
     const newDishName = document.getElementById('newDishName');
+    const moduleSelector = document.getElementById('moduleSelector');
+    const countSelector = document.getElementById('countSelector');
+    const wheelContainer = document.getElementById('wheelContainer');
 
+    // 状态
     let currentModule = 'all';
     let currentCount = 5;
     let currentMenus = [];
@@ -403,8 +424,7 @@
     let animationId = null;
 
     function filterMenus(module) {
-      if (module === 'all') return [...MENU_DB];
-      return MENU_DB.filter(m => m.type === module);
+      return module === 'all' ? [...MENU_DB] : MENU_DB.filter(m => m.type === module);
     }
 
     function randomMenus(pool, count) {
@@ -534,8 +554,8 @@
       spinBtn.disabled = true;
       hideRecipe();
       updateCenter(null);
-      document.getElementById('moduleSelector').classList.add('disabled-interaction');
-      document.getElementById('countSelector').classList.add('disabled-interaction');
+      moduleSelector.classList.add('disabled-interaction');
+      countSelector.classList.add('disabled-interaction');
 
       const cnt = currentMenus.length;
       const ang = (2*Math.PI)/cnt;
@@ -573,8 +593,8 @@
       isSpinning = false;
       animationId = null;
       spinBtn.disabled = false;
-      document.getElementById('moduleSelector').classList.remove('disabled-interaction');
-      document.getElementById('countSelector').classList.remove('disabled-interaction');
+      moduleSelector.classList.remove('disabled-interaction');
+      countSelector.classList.remove('disabled-interaction');
 
       const idx = getPointerIndex();
       if (idx >= 0 && idx < currentMenus.length) {
@@ -595,13 +615,16 @@
       hideRecipe();
     }
 
+    // 添加自定义菜品
     addDishBtn.addEventListener('click', () => {
       const name = newDishName.value.trim();
       if (!name) return alert('请输入菜名');
       const type = classifyDish(name);
-      const emoji = {carb:'🍚', protein:'🍗', vitamin:'🥬'}[type];
+      const emojiMap = { carb: '🍚', protein: '🍗', vitamin: '🥬' };
       MENU_DB.push({
-        name, emoji, type,
+        name,
+        emoji: emojiMap[type],
+        type,
         recipe: {
           ingredients: '按喜好准备食材',
           seasonings: '盐、生抽等',
@@ -613,6 +636,7 @@
       if (currentModule === 'all' || currentModule === type) resetWheel();
     });
 
+    // 旋转按钮
     spinBtn.addEventListener('click', spin);
     document.addEventListener('keydown', e => {
       if (e.code === 'Space' && !isSpinning && document.activeElement === document.body) {
@@ -621,6 +645,7 @@
       }
     });
 
+    // 模块切换
     moduleBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (isSpinning) return;
@@ -638,6 +663,7 @@
       });
     });
 
+    // 数量切换
     countBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (isSpinning) return;
@@ -654,14 +680,25 @@
       });
     });
 
+    // 画布自适应
     function resizeCanvas() {
-      const rect = document.getElementById('wheelContainer').getBoundingClientRect();
+      const rect = wheelContainer.getBoundingClientRect();
       const size = Math.min(rect.width, rect.height);
       canvas.width = canvas.height = size;
       drawWheel(rotationAngle);
     }
     window.addEventListener('resize', resizeCanvas);
-    if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(document.getElementById('wheelContainer'));
+    if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(wheelContainer);
+
+    // 注册 Service Worker (PWA离线缓存)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('data:application/javascript,' + encodeURIComponent(
+          "self.addEventListener('install',e=>{e.waitUntil(caches.open('v1').then(c=>c.addAll(['/']))) });" +
+          "self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))) });"
+        )).catch(() => {});
+      });
+    }
 
     // 启动
     function init() {
