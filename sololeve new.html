@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>我独自升级 - 健身记录</title>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { width: 100%; max-width: 500px; background: rgba(22, 33, 62, 0.95); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding: 28px; margin: 20px; }
+        h2, h3 { text-align: center; margin-bottom: 18px; }
+        .login-box h2 { color: #ff6b6b; font-size: 32px; letter-spacing: 2px; }
+        input, select, button { width: 100%; padding: 14px; margin: 10px 0; border-radius: 14px; border: none; font-size: 16px; outline: none; transition: 0.2s; }
+        input, select { background: #1f2b4d; color: #eee; border: 1px solid #3a4a6b; }
+        input:focus, select:focus { border-color: #ff6b6b; box-shadow: 0 0 8px rgba(255,107,107,0.4); }
+        button { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; font-weight: bold; cursor: pointer; letter-spacing: 0.5px; }
+        button:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(238,90,36,0.4); }
+        button.secondary { background: linear-gradient(135deg, #4a69bd, #1e3799); }
+        button.small { width: auto; padding: 8px 16px; font-size: 13px; }
+        .hidden { display: none !important; }
+        .nav { display: flex; justify-content: space-between; margin: 20px 0; gap: 8px; }
+        .nav button { flex:1; background: #1f2b4d; border: 1px solid #3a4a6b; padding: 10px 5px; font-size: 13px; border-radius: 12px; }
+        .nav button.active { background: linear-gradient(135deg, #ff6b6b, #ee5a24); border: none; color: white; }
+        .chart-wrapper { margin: 20px 0; }
+        #weightChartDiv { width: 100%; height: 380px; border-radius: 14px; overflow: hidden; }
+        .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .day-cell { background: #1f2b4d; padding: 6px 3px; border-radius: 10px; text-align: center; cursor: pointer; font-size: 10px; transition: 0.2s; min-height: 130px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .day-cell:hover { background: #2a3a5e; transform: scale(1.02); }
+        .day-cell.active { background: #ff6b6b; color: white; font-weight: bold; }
+        .stats-card { background: #1f2b4d; padding: 12px; border-radius: 10px; margin: 10px 0; }
+        .week-navigator { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .week-navigator button { width: auto; padding: 8px 16px; font-size: 14px; }
+        .file-upload-wrapper { display: flex; gap: 8px; align-items: center; margin: 10px 0; }
+        .file-upload-wrapper input[type="file"] { display: none; }
+        .file-btn { flex:1; text-align: center; padding: 12px; background: #1f2b4d; border: 1px solid #3a4a6b; border-radius: 14px; cursor: pointer; }
+        .download-btn { background: #4a69bd; }
+        .period-select { margin: 12px 0; }
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index:1000; }
+        .modal-content { background: #16213e; padding: 20px; border-radius: 20px; width:90%; max-width:500px; max-height:80vh; overflow-y:auto; color:#eee; position: relative; }
+        .img-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin: 2px; cursor: pointer; }
+        .img-thumb-small { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; margin: 1px; cursor: pointer; }
+        .image-viewer img { max-width: 100%; max-height: 60vh; border-radius: 10px; }
+        .image-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 10px; }
+        .friend-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #333; }
+        table.stats-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+        table.stats-table th, table.stats-table td { padding: 6px; border-bottom: 1px solid #333; text-align: center; }
+        .muscle-group-header { background: #0f3460; font-weight: bold; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 14px; z-index: 2000; opacity: 0; transition: opacity 0.3s; }
+        .phase-btn-small { padding: 10px; border-radius: 10px; background: #1f2b4d; text-align: center; cursor: pointer; font-weight: bold; flex:1; user-select: none; }
+        .phase-btn-small.strength.active { background: #e74c3c; }
+        .phase-btn-small.volume.active { background: #3498db; }
+        .phase-btn-small.strength::before { content: "🔥 "; }
+        .phase-btn-small.volume::before { content: "💧 "; }
+        .muscle-block { background: #0f3460; padding: 8px; border-radius: 10px; margin-bottom: 8px; }
+        .ex-table { width: 100%; font-size: 13px; border-collapse: collapse; margin: 8px 0; }
+        .ex-table th, .ex-table td { padding: 5px; border-bottom: 1px solid #333; text-align: center; }
+        .ex-table input, .ex-table select { margin:0; padding:8px; font-size:13px; width:100%; }
+        .ex-list-container { max-height: 150px; overflow-y: auto; margin-bottom: 8px; }
+        .physique-row { display: flex; align-items: center; justify-content: center; gap: 2px; margin: 1px 0; }
+        .physique-label { font-size: 9px; color: #aaa; width: 40px; }
+        .collapsible { cursor: pointer; }
+        .collapsible-content { display: none; margin-top: 10px; }
+        .collapsible.active + .collapsible-content { display: block; }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <!-- 登录界面 -->
+    <div id="auth-screen">
+        <div class="login-box">
+            <h2>⚡我独自升级</h2>
+            <input type="text" id="username" placeholder="用户名" autocomplete="username">
+            <input type="password" id="password" placeholder="密码" autocomplete="current-password">
+            <button type="button" id="loginBtn">登 录</button>
+            <button type="button" id="regBtn" class="secondary">注 册 新 账 号</button>
+            <p id="authMsg" style="text-align:center; margin-top:12px; min-height:20px; font-weight:bold;"></p>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="main-screen" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="color:#ff6b6b; margin:0;">⚡我独自升级</h2>
+            <button type="button" id="logoutBtn" class="small">退出</button>
+        </div>
+        <p>👤 <span id="myName"></span> | UID: <span id="myUid"></span></p>
+        <div style="display:flex; gap:8px; margin:8px 0;">
+            <button id="weeklyReportBtn" class="secondary" style="flex:1;">📈 本周统计</button>
+            <button id="refreshReportBtn" class="small secondary" style="flex:1;">🔄 刷新</button>
+        </div>
+
+        <div class="nav">
+            <button type="button" class="active" data-panel="weight">⚖️体重</button>
+            <button type="button" data-panel="strength">💪力量</button>
+            <button type="button" data-panel="onerm">🏋️1PR</button>
+            <button type="button" data-panel="physique">📷形体</button>
+            <button type="button" data-panel="friends">👥朋友</button>
+        </div>
+
+        <!-- 体重面板（重构：快速记录 + 手动日期折叠 + Excel底部） -->
+        <div id="weight-panel" class="panel">
+            <!-- 周期选择 -->
+            <div class="period-select">
+                <select id="periodDropdown">
+                    <option value="7d">7天</option>
+                    <option value="14d">14天</option>
+                    <option value="30d">30天</option>
+                    <option value="this_month">本月</option>
+                    <option value="last_month">上月</option>
+                    <option value="60d">60天</option>
+                    <option value="90d">90天</option>
+                    <option value="this_year">本年</option>
+                    <option value="last_year">去年</option>
+                    <option value="all" selected>全部</option>
+                </select>
+            </div>
+            <!-- 快速记录区域：今日体重 -->
+            <div class="stats-card">
+                <p style="margin-bottom:8px;">📅 今日体重快速记录</p>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input id="quickWeight" type="number" placeholder="体重 (kg)" step="0.1" style="flex:2;">
+                    <select id="quickPhase" style="flex:1;">
+                        <option value="bulk">增肌期</option>
+                        <option value="cut">减脂期</option>
+                    </select>
+                </div>
+                <button id="quickRecordBtn">记录今日体重</button>
+            </div>
+
+            <!-- 手动选择日期记录（折叠） -->
+            <div class="collapsible stats-card" id="manualDateToggle">
+                📆 手动选择日期记录 (点击展开)
+            </div>
+            <div class="collapsible-content">
+                <div class="stats-card">
+                    <input type="date" id="weightDate">
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="weightValue" placeholder="体重 (kg)" step="0.1" style="flex:2;">
+                        <select id="weightPhaseSelect" style="flex:1;">
+                            <option value="bulk">增肌期</option>
+                            <option value="cut">减脂期</option>
+                        </select>
+                    </div>
+                    <button id="addWeightBtn">记录体重</button>
+                </div>
+            </div>
+
+            <!-- 图表 -->
+            <div class="chart-wrapper">
+                <div id="weightChartDiv"></div>
+            </div>
+            <div id="weightSuggestion" class="stats-card" style="color:#ff9f43;"></div>
+
+            <!-- Excel 上传（移至底部） -->
+            <div class="file-upload-wrapper" style="margin-top:20px;">
+                <label for="xlsxUpload" class="file-btn">📂 上传 Excel 批量导入</label>
+                <input type="file" id="xlsxUpload" accept=".xlsx,.xls">
+                <button id="mapXlsxBtn" class="small download-btn" disabled>映射替换</button>
+                <button id="downloadTemplateBtn" class="small download-btn">⬇️ 模板</button>
+            </div>
+        </div>
+
+        <!-- 力量面板（保持不变） -->
+        <div id="strength-panel" class="panel hidden">
+            <div class="week-navigator">
+                <button id="prevWeekBtn" class="small">◀ 上周</button>
+                <span id="currentWeekLabel"></span>
+                <button id="nextWeekBtn" class="small">下周 ▶</button>
+                <button id="todayStrengthBtn" class="small">今天</button>
+            </div>
+            <div class="week-grid" id="weekGrid"></div>
+            <div style="display:flex; gap:10px; margin:12px 0;">
+                <div id="strengthWeekBtn" class="phase-btn-small strength">增力周</div>
+                <div id="volumeWeekBtn" class="phase-btn-small volume">容量周</div>
+            </div>
+            <div id="dayDetail" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- 1PR面板（保持不变） -->
+        <div id="onerm-panel" class="panel hidden">
+            <h3>最大1PR推算</h3>
+            <select id="prMuscleGroup">
+                <option value="">选择肌群</option>
+                <option value="胸部">胸部</option>
+                <option value="背部">背部</option>
+                <option value="腿部">腿部</option>
+                <option value="肩部">肩部</option>
+                <option value="手臂">手臂</option>
+            </select>
+            <select id="prExercise" class="hidden"></select>
+            <button id="addPrExerciseBtn" class="small secondary hidden">+ 添加动作</button>
+            <input type="number" id="repsInput" placeholder="完成的次数">
+            <input type="number" id="weightInput" placeholder="使用的重量 (kg)">
+            <select id="prFormula" style="margin:10px 0;">
+                <option value="epley" selected>Epley (1 + 次数/30)</option>
+                <option value="brzycki">Brzycki (36 / (37 - 次数))</option>
+                <option value="lombardi">Lombardi (次数^0.1)</option>
+                <option value="mayhew">Mayhew (100 / (101.3 - 2.67123*次数))</option>
+                <option value="lander">Lander (100 / (101.3 - 2.67123*次数))</option>
+            </select>
+            <button id="calc1RM">计 算</button>
+            <p id="rmResult" style="text-align:center; font-size:28px; margin-top:20px; color:#ff6b6b;"></p>
+            <p id="formulaUsed" style="text-align:center; color:#aaa; font-size:14px;"></p>
+        </div>
+
+        <!-- 形体面板（手机相册优化） -->
+        <div id="physique-panel" class="panel hidden">
+            <div class="week-navigator">
+                <button id="physiquePrevWeek" class="small">◀ 上周</button>
+                <span id="physiqueWeekLabel"></span>
+                <button id="physiqueNextWeek" class="small">下周 ▶</button>
+                <button id="todayPhysiqueBtn" class="small">今天</button>
+            </div>
+            <div class="week-grid" id="physiqueWeekGrid"></div>
+            <input type="file" id="physiqueImageUpload" accept="image/*" multiple style="display:none;">
+            <input type="hidden" id="physiqueTargetDate">
+            <div id="physiqueUploadStatus" style="text-align:center; margin-top:8px; color:#aaa;"></div>
+        </div>
+
+        <!-- 朋友面板 -->
+        <div id="friends-panel" class="panel hidden">
+            <h3>朋友数据</h3>
+            <input type="text" id="friendUidInput" placeholder="输入好友UID">
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <button id="addFriendBtn" style="flex:1;">添加并查看</button>
+                <button id="refreshFriendDataBtn" class="small secondary" style="flex:1;">刷新当前好友</button>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <button id="exportMyDataBtn" class="small secondary">📤 导出我的数据</button>
+                <button id="importFriendDataBtn" class="small secondary">📥 导入好友数据</button>
+            </div>
+            <div id="friendList" class="stats-card" style="margin-top:10px;"></div>
+            <div id="friendData" class="stats-card" style="margin-top:15px; display:none;"></div>
+        </div>
+    </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ---------- Toast 提示 ----------
+        function showToast(msg, duration = 2000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.opacity = '1';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => { toast.style.opacity = '0'; }, duration);
+        }
+
+        // ---------- 数据 ----------
+        const STORAGE_KEY = 'solo_leveling_users';
+        let allUsers = {};
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            allUsers = raw ? JSON.parse(raw) : {};
+            if (typeof allUsers !== 'object' || allUsers === null) { allUsers = {}; localStorage.setItem(STORAGE_KEY, '{}'); }
+        } catch (e) { allUsers = {}; localStorage.setItem(STORAGE_KEY, '{}'); }
+
+        let currentUser = null;
+        let pendingXlsxRecords = [];
+        let weightPeriod = 'all';
+        let currentFriendUid = null;
+
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(allUsers)); }
+        function generateUID() {
+            let uid;
+            do { uid = Math.floor(100000 + Math.random() * 900000).toString(); } while (allUsers[uid]);
+            return uid;
+        }
+
+        const exerciseLibrary = {
+            '胸部': ['平板卧推','上斜卧推','下斜卧推','哑铃飞鸟','上斜哑铃飞鸟','双杠臂屈伸','绳索夹胸','蝴蝶机夹胸','俯卧撑','器械推胸','斯万推胸','弹力带夹胸'],
+            '背部': ['引体向上','杠铃划船','哑铃划船','高位下拉','坐姿划船','T杆划船','直臂下压','山羊挺身','硬拉','单臂哑铃划船','宽握引体','绳索面拉'],
+            '腿部': ['深蹲','硬拉','腿举','腿弯举','负重提踵','保加利亚分腿蹲','箭步蹲','哈克深蹲','臀桥','腿屈伸','站姿提踵','倒蹬机'],
+            '肩部': ['哑铃推举','侧平举','前平举','面拉','阿诺德推举','杠铃推举','俯身飞鸟','绳索侧平举','直立划船','蝴蝶机反向飞鸟'],
+            '手臂': ['杠铃弯举','锤式弯举','三头下压','窄距卧推','集中弯举','牧师椅弯举','绳索锤式弯举','双杠臂屈伸（臂）','仰卧臂屈伸','腕弯举']
+        };
+
+        function getMonday(dateStr) {
+            const parts = dateStr.split('-');
+            const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            const dayOfWeek = d.getDay();
+            const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            d.setDate(d.getDate() + diff);
+            return formatDate(d);
+        }
+
+        function formatDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function addWeek(monday, weeks) {
+            const parts = monday.split('-');
+            const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            d.setDate(d.getDate() + weeks * 7);
+            return formatDate(d);
+        }
+
+        function getMonthOffsetDate(dateStr, offset) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const dObj = new Date(y, m - 1, d);
+            dObj.setMonth(dObj.getMonth() + offset);
+            return formatDate(dObj);
+        }
+
+        function parseDateToISO(str) {
+            if (!str) return null;
+            let d = new Date(str);
+            if (!isNaN(d.getTime())) return formatDate(d);
+            return null;
+        }
+
+        function escapeHtml(text) { return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+
+        function showAuthMsg(text, isError=true) {
+            const el = document.getElementById('authMsg'); if(!el) return;
+            el.textContent = text; el.style.color = isError ? '#ff6b6b' : '#2ecc71';
+            setTimeout(()=>el.textContent='',3000);
+        }
+
+        function showMain() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+            document.getElementById('myUid').textContent = currentUser.uid;
+            document.getElementById('myName').textContent = currentUser.username;
+            switchPanel('weight');
+        }
+
+        function switchPanel(name) {
+            ['weight','strength','onerm','physique','friends'].forEach(id=>{
+                document.getElementById(id+'-panel').classList.add('hidden');
+            });
+            document.getElementById(name+'-panel').classList.remove('hidden');
+            document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+            const btn = document.querySelector('.nav button[data-panel="'+name+'"]');
+            if(btn) btn.classList.add('active');
+            if(name==='weight') renderWeightPanel();
+            if(name==='strength') renderStrengthWeek();
+            if(name==='physique') renderPhysiquePanel();
+            if(name==='onerm') document.getElementById('prMuscleGroup').value='';
+            if(name==='friends') renderFriendList();
+        }
+
+        // ========== 本周统计 ==========
+        function generateReportContent() {
+            if (!currentUser) return '<p>请先登录</p>';
+            const today = formatDate(new Date());
+            const thisMonday = getMonday(today);
+            const lastMonday = addWeek(thisMonday, -1);
+
+            const thisPlan = currentUser.weeklyPlans[thisMonday] || { days:{}, weekType:null };
+            const thisWeekType = thisPlan.weekType;
+            let compareMonday = lastMonday;
+            if (thisWeekType) {
+                const allMondays = Object.keys(currentUser.weeklyPlans).filter(d => d < thisMonday).sort((a,b)=>b.localeCompare(a));
+                for (let d of allMondays) {
+                    if (currentUser.weeklyPlans[d].weekType === thisWeekType) {
+                        compareMonday = d;
+                        break;
+                    }
+                }
+            }
+            const comparePlan = currentUser.weeklyPlans[compareMonday] || { days:{} };
+
+            function aggregateExercises(plan) {
+                const result = {};
+                for (let i=0; i<7; i++) {
+                    const day = plan.days[i] || { muscles: [] };
+                    if (!day.muscles) continue;
+                    day.muscles.forEach(muscle => {
+                        if (!muscle.muscleGroup || muscle.muscleGroup === '休息') return;
+                        if (!result[muscle.muscleGroup]) result[muscle.muscleGroup] = {};
+                        (muscle.exercises || []).forEach(e => {
+                            if (!result[muscle.muscleGroup][e.name]) result[muscle.muscleGroup][e.name] = { sets:0, totalWeight:0 };
+                            result[muscle.muscleGroup][e.name].sets += e.sets;
+                            result[muscle.muscleGroup][e.name].totalWeight += e.weight * e.sets;
+                        });
+                    });
+                }
+                return result;
+            }
+
+            const thisData = aggregateExercises(thisPlan);
+            const compareData = aggregateExercises(comparePlan);
+
+            let html = '<h3>📊 本周详细周报</h3>';
+            const thisWeekW = currentUser.weightRecords.filter(r=>r.date>=thisMonday);
+            const lastWeekW = currentUser.weightRecords.filter(r=>r.date>=lastMonday && r.date<thisMonday);
+            const avgThis = thisWeekW.length ? (thisWeekW.reduce((s,r)=>s+r.weight,0)/thisWeekW.length).toFixed(1) : null;
+            const avgLast = lastWeekW.length ? (lastWeekW.reduce((s,r)=>s+r.weight,0)/lastWeekW.length).toFixed(1) : null;
+            html += '<p>体重：本周平均 '+(avgThis||'-')+' kg，';
+            if (avgLast) html += '上周 '+(avgLast||'-')+' kg';
+            html += '</p>';
+
+            html += '<h4>💪 训练动作对比</h4>';
+            const allMuscles = new Set([...Object.keys(thisData), ...Object.keys(compareData)]);
+            if (allMuscles.size === 0) {
+                html += '<p>本周无训练记录</p>';
+            } else {
+                html += '<table class="stats-table"><tr><th>肌群</th><th>动作</th><th>组数</th><th>均重(kg)</th><th>组数变化</th><th>重量变化</th></tr>';
+                allMuscles.forEach(mg => {
+                    const thisMuscleData = thisData[mg] || {};
+                    const compareMuscleData = compareData[mg] || {};
+                    const allExercises = new Set([...Object.keys(thisMuscleData), ...Object.keys(compareMuscleData)]);
+                    html += `<tr class="muscle-group-header"><td colspan="6" style="text-align:center;">${escapeHtml(mg)}</td></tr>`;
+                    allExercises.forEach(ex => {
+                        const cur = thisMuscleData[ex] || { sets:0, totalWeight:0 };
+                        const prev = compareMuscleData[ex] || { sets:0, totalWeight:0 };
+                        const curAvg = cur.sets ? (cur.totalWeight/cur.sets).toFixed(1) : '0';
+                        const prevAvg = prev.sets ? (prev.totalWeight/prev.sets).toFixed(1) : '0';
+                        let setChange = '-', weightChange = '-';
+                        if (prev.sets > 0) {
+                            const setPct = ((cur.sets - prev.sets)/prev.sets*100).toFixed(0);
+                            setChange = (setPct>0?'+':'')+setPct+'%';
+                            const weightPct = ((parseFloat(curAvg) - parseFloat(prevAvg))/parseFloat(prevAvg)*100).toFixed(0);
+                            weightChange = (weightPct>0?'+':'')+weightPct+'%';
+                        } else if (cur.sets > 0) {
+                            setChange = '新'; weightChange = '新';
+                        }
+                        html += `<tr>
+                            <td></td>
+                            <td>${escapeHtml(ex)}</td>
+                            <td>${cur.sets}</td>
+                            <td>${curAvg}</td>
+                            <td>${setChange}</td>
+                            <td>${weightChange}</td>
+                        </tr>`;
+                    });
+                });
+                html += '</table>';
+            }
+            const typeLabel = thisWeekType ? (thisWeekType==='strength'?'增力周':'容量周') : '上周';
+            html += `<p style="margin-top:10px;">对比基准：${typeLabel} (${compareMonday})</p>`;
+            return html;
+        }
+
+        function showWeeklyReport() { showModal(generateReportContent()); }
+        document.getElementById('weeklyReportBtn').addEventListener('click', showWeeklyReport);
+        document.getElementById('refreshReportBtn').addEventListener('click', ()=>{
+            showToast('数据已刷新，打开本周统计将显示最新内容');
+        });
+
+        function showModal(content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = '<div class="modal-content">'+content+'</div>';
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.remove(); });
+        }
+
+        // 登录/注册
+        document.getElementById('loginBtn').addEventListener('click', ()=>{
+            const uname = document.getElementById('username').value.trim();
+            const pwd = document.getElementById('password').value;
+            if(!uname||!pwd) return showAuthMsg('请输入用户名和密码');
+            const user = Object.values(allUsers).find(u=>u.username===uname&&u.password===pwd);
+            if(!user) return showAuthMsg('用户名或密码错误');
+            currentUser = user;
+            showMain();
+        });
+        document.getElementById('regBtn').addEventListener('click', ()=>{
+            const uname = document.getElementById('username').value.trim();
+            const pwd = document.getElementById('password').value;
+            if(!uname||!pwd) return showAuthMsg('请输入用户名和密码');
+            if(uname.length<2) return showAuthMsg('用户名至少2个字符');
+            if(pwd.length<3) return showAuthMsg('密码至少3位');
+            if(Object.values(allUsers).some(u=>u.username===uname)) return showAuthMsg('用户名已存在');
+            const uid = generateUID();
+            allUsers[uid] = { uid, username:uname, password:pwd, weightRecords:[], weeklyPlans:{}, friends:[], customExercises:{} };
+            save();
+            showAuthMsg('✅ 注册成功！UID: '+uid+'，请登录', false);
+            document.getElementById('username').value=''; document.getElementById('password').value='';
+        });
+        document.getElementById('logoutBtn').addEventListener('click', ()=>{
+            currentUser=null; localStorage.removeItem('lastLoggedUID');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('main-screen').classList.add('hidden');
+        });
+
+        // ========== 体重面板（快速记录+手动折叠+Excel底部） ==========
+        // 手动日期折叠展开
+        document.getElementById('manualDateToggle').addEventListener('click', function(){
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        });
+
+        // 快速记录
+        document.getElementById('quickRecordBtn').addEventListener('click', ()=>{
+            if(!currentUser) return;
+            const weight = parseFloat(document.getElementById('quickWeight').value);
+            if (isNaN(weight)) return showToast('请输入体重');
+            const phase = document.getElementById('quickPhase').value;
+            const today = formatDate(new Date());
+            // 查找同日期并替换
+            const idx = currentUser.weightRecords.findIndex(r => r.date === today);
+            if (idx !== -1) {
+                currentUser.weightRecords[idx] = { date: today, weight, phase };
+            } else {
+                currentUser.weightRecords.push({ date: today, weight, phase });
+            }
+            save();
+            document.getElementById('quickWeight').value = '';
+            renderWeightPanel();
+            showToast('体重已记录');
+        });
+
+        // 手动记录
+        document.getElementById('addWeightBtn').addEventListener('click', ()=>{
+            if(!currentUser) return;
+            const date = document.getElementById('weightDate').value;
+            const weight = parseFloat(document.getElementById('weightValue').value);
+            if (!date || isNaN(weight)) return showToast('请填写日期和体重');
+            const phase = document.getElementById('weightPhaseSelect').value;
+            const idx = currentUser.weightRecords.findIndex(r => r.date === date);
+            if (idx !== -1) {
+                currentUser.weightRecords[idx] = { date, weight, phase };
+            } else {
+                currentUser.weightRecords.push({ date, weight, phase });
+            }
+            save();
+            renderWeightPanel();
+            showToast('体重记录已添加');
+        });
+
+        document.getElementById('periodDropdown').addEventListener('change', function(){
+            weightPeriod = this.value;
+            renderWeightPanel();
+        });
+
+        function getFilteredByPeriod(period) {
+            if (!currentUser) return [];
+            const records = [...currentUser.weightRecords].sort((a,b)=>a.date.localeCompare(b.date));
+            if (period === 'all') return records;
+            const now = new Date();
+            const today = formatDate(now);
+            let start, end;
+            function getLastMonthRange() {
+                const y = now.getFullYear(), m = now.getMonth();
+                const firstDay = new Date(y, m-1, 1);
+                const lastDay = new Date(y, m, 0);
+                return { start: formatDate(firstDay), end: formatDate(lastDay) };
+            }
+            switch(period) {
+                case '7d': start = formatDate(new Date(Date.now() - 7*86400000)); end = today; break;
+                case '14d': start = formatDate(new Date(Date.now() - 14*86400000)); end = today; break;
+                case '30d': start = formatDate(new Date(Date.now() - 30*86400000)); end = today; break;
+                case '60d': start = formatDate(new Date(Date.now() - 60*86400000)); end = today; break;
+                case '90d': start = formatDate(new Date(Date.now() - 90*86400000)); end = today; break;
+                case 'this_month': start = formatDate(new Date(now.getFullYear(), now.getMonth(), 1)); end = today; break;
+                case 'last_month': {
+                    const last = getLastMonthRange();
+                    return records.filter(r => r.date >= last.start && r.date <= last.end);
+                }
+                case 'this_year': start = formatDate(new Date(now.getFullYear(), 0, 1)); end = today; break;
+                case 'last_year': {
+                    const y = now.getFullYear() - 1;
+                    const first = formatDate(new Date(y, 0, 1));
+                    const last = formatDate(new Date(y, 11, 31));
+                    return records.filter(r => r.date >= first && r.date <= last);
+                }
+                default: return records;
+            }
+            return records.filter(r => r.date >= start && r.date <= end);
+        }
+
+        function renderWeightPanel() {
+            const records = getFilteredByPeriod(weightPeriod);
+            drawWeightChart(records);
+            updateSuggestion(records);
+        }
+
+        function drawWeightChart(records) {
+            const container = document.getElementById('weightChartDiv');
+            if (!container) return;
+            if (records.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:50px; color:#aaa;">暂无体重数据</div>';
+                return;
+            }
+            const dates = records.map(r => r.date);
+            const weights = records.map(r => r.weight);
+            const phases = records.map(r => r.phase);
+            const trace = {
+                x: dates,
+                y: weights,
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: { color: phases.map(p => p === 'bulk' ? '#27ae60' : '#e74c3c'), size: 8 },
+                line: { color: '#ff6b6b', width: 2 },
+                hovertemplate: '日期: %{x}<br>体重: %{y} kg<extra></extra>',
+            };
+            const periodText = document.getElementById('periodDropdown').selectedOptions[0]?.text || '全部';
+            const layout = {
+                title: `体重变化 (${periodText})`,
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: '#1f2b4d',
+                font: { color: '#eee' },
+                xaxis: { title: '日期', tickformat: '%y-%m-%d', gridcolor: '#444' },
+                yaxis: { title: '体重 (kg)', gridcolor: '#444' },
+                margin: { l: 50, r: 20, t: 50, b: 50 },
+                hovermode: 'closest',
+            };
+            Plotly.newPlot(container, [trace], layout, { displayModeBar: false, responsive: true });
+        }
+
+        function updateSuggestion(records) {
+            const el = document.getElementById('weightSuggestion');
+            if (!el) return;
+            if (records.length < 2) { el.textContent = '数据不足，无法给出建议'; return; }
+            const first = records[0], last = records[records.length-1];
+            const totalChange = last.weight - first.weight;
+            const days = Math.max(1, (new Date(last.date) - new Date(first.date)) / 86400000);
+            const weeklyRate = (totalChange / (days/7)).toFixed(2);
+            const lastPhase = last.phase;
+            let sug = lastPhase === 'bulk' ? (weeklyRate < 0.2 ? '增肌偏慢' : '增肌趋势良好') : (weeklyRate > -0.2 ? '减脂较慢' : '减脂速率正常');
+            el.textContent = `📊 总记录${records.length}条 | 趋势${totalChange.toFixed(1)}kg | ${sug} (周均${weeklyRate}kg)`;
+        }
+
+        // Excel 操作（保持不变）
+        document.getElementById('downloadTemplateBtn').addEventListener('click', ()=>{
+            if(typeof XLSX === 'undefined') return showToast('需要加载 SheetJS 库');
+            const ws_data = [['日期','体重','增肌期/减脂期'], ['2025-01-01',70.0,'增肌期']];
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "体重记录");
+            XLSX.writeFile(wb, "体重记录模板.xlsx");
+        });
+        document.getElementById('xlsxUpload').addEventListener('change', function(e){
+            const file = e.target.files[0];
+            if(!file) return;
+            if(typeof XLSX === 'undefined') return showToast('需要加载 SheetJS 库');
+            const reader = new FileReader();
+            reader.onload = function(ev){
+                const data = new Uint8Array(ev.target.result);
+                const wb = XLSX.read(data, {type: 'array'});
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw: false});
+                if(rows.length<2) return showToast('至少需要表头和一行数据');
+                const headers = rows[0].map(h=>String(h).trim());
+                const dateIdx = headers.indexOf('日期'), weightIdx = headers.indexOf('体重'), phaseIdx = headers.indexOf('增肌期/减脂期');
+                if(dateIdx===-1||weightIdx===-1) return showToast('表头错误');
+                pendingXlsxRecords = [];
+                for(let i=1;i<rows.length;i++){
+                    const r = rows[i];
+                    let rawDate = r[dateIdx];
+                    let date = parseDateToISO(rawDate);
+                    if (!date) continue;
+                    const weight = parseFloat(r[weightIdx]);
+                    if (isNaN(weight)) continue;
+                    const phaseRaw = String(r[phaseIdx]||'').trim();
+                    pendingXlsxRecords.push({ date, weight, phase: phaseRaw==='增肌期'?'bulk':'cut' });
+                }
+                document.getElementById('mapXlsxBtn').disabled = false;
+                showToast(`读取成功，共 ${pendingXlsxRecords.length} 条，点击映射替换全部数据。`);
+            };
+            reader.readAsArrayBuffer(file);
+        });
+        document.getElementById('mapXlsxBtn').addEventListener('click', ()=>{
+            if(!currentUser || pendingXlsxRecords.length===0) return;
+            currentUser.weightRecords = pendingXlsxRecords;
+            save();
+            pendingXlsxRecords=[];
+            document.getElementById('mapXlsxBtn').disabled=true;
+            weightPeriod = 'all';
+            document.getElementById('periodDropdown').value = 'all';
+            renderWeightPanel();
+            showToast('体重数据已全部替换');
+        });
+
+        // ========== 力量面板（保持不变） ==========
+        let currentStrengthMonday = getMonday(formatDate(new Date()));
+        function setStrengthMonday(dateStr) { currentStrengthMonday = dateStr; renderStrengthWeek(); }
+        document.getElementById('prevWeekBtn').addEventListener('click', ()=>setStrengthMonday(addWeek(currentStrengthMonday, -1)));
+        document.getElementById('nextWeekBtn').addEventListener('click', ()=>setStrengthMonday(addWeek(currentStrengthMonday, 1)));
+        document.getElementById('todayStrengthBtn').addEventListener('click', ()=>setStrengthMonday(getMonday(formatDate(new Date()))));
+
+        function getPlan(weekMonday) {
+            if(!currentUser.weeklyPlans[weekMonday]) currentUser.weeklyPlans[weekMonday] = { days:{}, weekType:null };
+            return currentUser.weeklyPlans[weekMonday];
+        }
+
+        function updateWeekTypeButtons() {
+            const plan = getPlan(currentStrengthMonday);
+            const s = document.getElementById('strengthWeekBtn');
+            const v = document.getElementById('volumeWeekBtn');
+            s.classList.toggle('active', plan.weekType==='strength');
+            v.classList.toggle('active', plan.weekType==='volume');
+        }
+
+        document.getElementById('strengthWeekBtn').addEventListener('click', ()=>{
+            const plan = getPlan(currentStrengthMonday);
+            plan.weekType = plan.weekType==='strength'? null : 'strength';
+            save();
+            updateWeekTypeButtons();
+            showToast(plan.weekType==='strength' ? '已标记为增力周 🔥' : '已取消增力周标记');
+        });
+        document.getElementById('volumeWeekBtn').addEventListener('click', ()=>{
+            const plan = getPlan(currentStrengthMonday);
+            plan.weekType = plan.weekType==='volume'? null : 'volume';
+            save();
+            updateWeekTypeButtons();
+            showToast(plan.weekType==='volume' ? '已标记为容量周 💧' : '已取消容量周标记');
+        });
+
+        function renderStrengthWeek() {
+            document.getElementById('currentWeekLabel').textContent = currentStrengthMonday + ' 周';
+            updateWeekTypeButtons();
+            const plan = getPlan(currentStrengthMonday);
+            const grid = document.getElementById('weekGrid'); grid.innerHTML='';
+            const dayNames = ['一','二','三','四','五','六','日'];
+            for(let i=0;i<7;i++){
+                const d = new Date(currentStrengthMonday + 'T00:00:00');
+                d.setDate(d.getDate() + i);
+                const dateStr = formatDate(d);
+                const dayData = plan.days[i] || { muscles: [] };
+                const muscleNames = (dayData.muscles || []).length > 0
+                    ? (dayData.muscles.map(m => m.muscleGroup).filter(Boolean).join(',') || '休息')
+                    : '休息';
+                const cell = document.createElement('div'); cell.className='day-cell';
+                cell.innerHTML = `周${dayNames[i]}<br>${dateStr.slice(5)}<br>${muscleNames}`;
+                cell.addEventListener('click', ()=>showDayDetail(i));
+                grid.appendChild(cell);
+            }
+        }
+
+        function showDayDetail(dayIdx) {
+            const plan = getPlan(currentStrengthMonday);
+            if(!plan.days[dayIdx]) plan.days[dayIdx] = { muscles: [] };
+            const day = plan.days[dayIdx];
+            if (!day.muscles) day.muscles = [];
+
+            const container = document.getElementById('dayDetail');
+            let html = '<h4>'+['周一','周二','周三','周四','周五','周六','周日'][dayIdx]+'</h4>';
+
+            day.muscles.forEach((muscle, mIdx) => {
+                html += renderMuscleBlock(muscle, mIdx);
+            });
+
+            html += `<div style="display:flex; gap:8px;">
+                <button id="addMuscleBtn" class="small secondary" style="flex:1;">+ 添加肌群</button>
+                <button id="restDayBtn" class="small secondary" style="flex:1;">🛌 休息</button>
+            </div>`;
+            container.innerHTML = html;
+
+            document.querySelectorAll('.remove-muscle-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.midx);
+                    day.muscles.splice(idx, 1);
+                    save();
+                    renderStrengthWeek();
+                    showDayDetail(dayIdx);
+                });
+            });
+
+            document.getElementById('addMuscleBtn').addEventListener('click', () => {
+                day.muscles.push({ muscleGroup: '', exercises: [] });
+                save();
+                renderStrengthWeek();
+                showDayDetail(dayIdx);
+            });
+
+            document.getElementById('restDayBtn').addEventListener('click', () => {
+                day.muscles = [];
+                save();
+                renderStrengthWeek();
+                showDayDetail(dayIdx);
+                showToast('已设为休息日');
+            });
+
+            day.muscles.forEach((muscle, mIdx) => {
+                const groupSel = document.getElementById(`groupSel-${mIdx}`);
+                if (groupSel) {
+                    groupSel.value = muscle.muscleGroup || '';
+                    groupSel.addEventListener('change', function() {
+                        muscle.muscleGroup = this.value;
+                        save();
+                        renderStrengthWeek();
+                        showDayDetail(dayIdx);
+                    });
+                }
+
+                const exerciseArea = document.getElementById(`exerciseArea-${mIdx}`);
+                if (exerciseArea) {
+                    function renderExercises() {
+                        let exHtml = '';
+                        if (muscle.muscleGroup && muscle.muscleGroup !== '休息') {
+                            const baseExs = exerciseLibrary[muscle.muscleGroup] || [];
+                            const customExs = (currentUser.customExercises && currentUser.customExercises[muscle.muscleGroup]) ? currentUser.customExercises[muscle.muscleGroup] : [];
+                            const allExs = [...new Set([...baseExs, ...customExs])];
+
+                            exHtml += `<div class="ex-list-container">
+                                <table class="ex-table">
+                                    <thead><tr><th>动作</th><th>重量(kg)</th><th>次数</th><th>组数</th><th></th></tr></thead>
+                                    <tbody>`;
+                            (muscle.exercises || []).forEach((e, eIdx) => {
+                                exHtml += `<tr>
+                                    <td>${escapeHtml(e.name)}</td>
+                                    <td>${e.weight}</td>
+                                    <td>${e.reps}</td>
+                                    <td>${e.sets}</td>
+                                    <td>
+                                        <button class="small modEx" data-midx="${mIdx}" data-eidx="${eIdx}" style="padding:2px 8px;">修改</button>
+                                        <button class="small delEx" data-midx="${mIdx}" data-eidx="${eIdx}" style="padding:2px 8px;">删除</button>
+                                    </td>
+                                </tr>`;
+                            });
+                            exHtml += `</tbody></table></div>`;
+
+                            exHtml += `<div style="display:flex; gap:6px; margin:8px 0;">
+                                <select id="exSel-${mIdx}" style="flex:1;"><option value="">选择动作</option>`;
+                            allExs.forEach(ex => exHtml += '<option>'+escapeHtml(ex)+'</option>');
+                            exHtml += `</select>
+                                <button class="small add-custom-btn" data-midx="${mIdx}">+</button>
+                            </div>`;
+                            exHtml += `<div style="display:flex; gap:6px;">
+                                <input id="wtDet-${mIdx}" placeholder="重量" type="number" step="0.5" style="flex:1;">
+                                <input id="repDet-${mIdx}" placeholder="次数" type="number" style="flex:1;">
+                                <input id="setDet-${mIdx}" placeholder="组数" type="number" style="flex:1;">
+                            </div>`;
+                            exHtml += `<button class="small add-ex-btn" data-midx="${mIdx}">添加动作</button>`;
+                        }
+                        exerciseArea.innerHTML = exHtml;
+
+                        if (!muscle.muscleGroup || muscle.muscleGroup === '休息') return;
+
+                        const addCustomBtn = document.querySelector(`.add-custom-btn[data-midx="${mIdx}"]`);
+                        if (addCustomBtn) {
+                            addCustomBtn.addEventListener('click', () => {
+                                const newName = prompt('输入新动作名称：');
+                                if (newName && newName.trim()) {
+                                    if (!currentUser.customExercises) currentUser.customExercises = {};
+                                    if (!currentUser.customExercises[muscle.muscleGroup]) currentUser.customExercises[muscle.muscleGroup] = [];
+                                    if (!currentUser.customExercises[muscle.muscleGroup].includes(newName.trim())) {
+                                        currentUser.customExercises[muscle.muscleGroup].push(newName.trim());
+                                        save();
+                                        showToast('动作添加成功');
+                                        renderExercises();
+                                    }
+                                }
+                            });
+                        }
+
+                        const addExBtn = document.querySelector(`.add-ex-btn[data-midx="${mIdx}"]`);
+                        if (addExBtn) {
+                            addExBtn.addEventListener('click', () => {
+                                const exSel = document.getElementById(`exSel-${mIdx}`);
+                                const wtDet = document.getElementById(`wtDet-${mIdx}`);
+                                const repDet = document.getElementById(`repDet-${mIdx}`);
+                                const setDet = document.getElementById(`setDet-${mIdx}`);
+                                if (!exSel || !wtDet || !repDet || !setDet) return;
+                                const name = exSel.value;
+                                const w = parseFloat(wtDet.value);
+                                const r = parseInt(repDet.value);
+                                const s = parseInt(setDet.value);
+                                if (!name || isNaN(w) || isNaN(r) || isNaN(s)) return showToast('完整填写');
+                                if (!muscle.exercises) muscle.exercises = [];
+                                muscle.exercises.push({ name, weight: w, reps: r, sets: s });
+                                save();
+                                renderExercises();
+                            });
+                        }
+
+                        document.querySelectorAll(`.modEx[data-midx="${mIdx}"]`).forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const eIdx = parseInt(this.dataset.eidx);
+                                const ex = muscle.exercises[eIdx];
+                                const newWeight = prompt('新重量(kg)', ex.weight);
+                                const newReps = prompt('新次数', ex.reps);
+                                const newSets = prompt('新组数', ex.sets);
+                                if (newWeight && !isNaN(parseFloat(newWeight)) && newReps && !isNaN(parseInt(newReps)) && newSets && !isNaN(parseInt(newSets))) {
+                                    ex.weight = parseFloat(newWeight);
+                                    ex.reps = parseInt(newReps);
+                                    ex.sets = parseInt(newSets);
+                                    save();
+                                    renderExercises();
+                                } else {
+                                    showToast('输入无效');
+                                }
+                            });
+                        });
+                        document.querySelectorAll(`.delEx[data-midx="${mIdx}"]`).forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const eIdx = parseInt(this.dataset.eidx);
+                                muscle.exercises.splice(eIdx, 1);
+                                save();
+                                renderExercises();
+                            });
+                        });
+                    }
+                    renderExercises();
+                }
+            });
+        }
+
+        function renderMuscleBlock(muscle, idx) {
+            return `
+                <div class="muscle-block" id="muscle-block-${idx}">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <select id="groupSel-${idx}" style="flex:1; margin:0;">
+                            <option value="">选择肌群</option>
+                            <option value="胸部">胸部</option>
+                            <option value="背部">背部</option>
+                            <option value="腿部">腿部</option>
+                            <option value="肩部">肩部</option>
+                            <option value="手臂">手臂</option>
+                        </select>
+                        <button class="small remove-muscle-btn" data-midx="${idx}" style="margin-left:8px;">删除</button>
+                    </div>
+                    <div id="exerciseArea-${idx}"></div>
+                </div>
+            `;
+        }
+
+        // ========== 1PR（保持不变） ==========
+        const prFormulas = {
+            epley: (w, r) => w * (1 + r/30),
+            brzycki: (w, r) => w * (36 / (37 - r)),
+            lombardi: (w, r) => w * Math.pow(r, 0.1),
+            mayhew: (w, r) => 100 * w / (101.3 - 2.67123 * r),
+            lander: (w, r) => 100 * w / (101.3 - 2.67123 * r)
+        };
+        const formulaNames = { epley:'Epley', brzycki:'Brzycki', lombardi:'Lombardi', mayhew:'Mayhew', lander:'Lander' };
+
+        document.getElementById('prMuscleGroup').addEventListener('change', function(){
+            const mg = this.value;
+            const sel = document.getElementById('prExercise');
+            const addBtn = document.getElementById('addPrExerciseBtn');
+            if(!mg){ sel.classList.add('hidden'); addBtn.classList.add('hidden'); return; }
+            sel.classList.remove('hidden'); addBtn.classList.remove('hidden');
+            updatePrExerciseList(mg);
+        });
+        function updatePrExerciseList(mg) {
+            const sel = document.getElementById('prExercise');
+            const base = exerciseLibrary[mg]||[];
+            const custom = (currentUser.customExercises&&currentUser.customExercises[mg])?currentUser.customExercises[mg]:[];
+            const all = [...new Set([...base, ...custom])];
+            sel.innerHTML = '<option value="">选择动作</option>' + all.map(e=>'<option>'+e+'</option>').join('');
+        }
+        document.getElementById('addPrExerciseBtn').addEventListener('click', ()=>{
+            const mg = document.getElementById('prMuscleGroup').value;
+            if(!mg) return;
+            const newName = prompt('输入新动作名称：');
+            if(newName && newName.trim()){
+                if(!currentUser.customExercises) currentUser.customExercises = {};
+                if(!currentUser.customExercises[mg]) currentUser.customExercises[mg] = [];
+                if(!currentUser.customExercises[mg].includes(newName.trim())){
+                    currentUser.customExercises[mg].push(newName.trim());
+                    save();
+                    showToast('动作添加成功');
+                    updatePrExerciseList(mg);
+                }
+            }
+        });
+        document.getElementById('calc1RM').addEventListener('click', ()=>{
+            const w = parseFloat(document.getElementById('weightInput').value);
+            const r = parseInt(document.getElementById('repsInput').value);
+            if(isNaN(w)||isNaN(r)||r<1) return showToast('输入有效值');
+            const formula = document.getElementById('prFormula').value;
+            const rm = prFormulas[formula](w, r).toFixed(1);
+            document.getElementById('rmResult').textContent = '💥 ' + rm + ' kg';
+            document.getElementById('formulaUsed').textContent = '公式: ' + formulaNames[formula];
+        });
+
+        // ========== 形体面板（手机相册优化） ==========
+        let currentPhysiqueMonday = getMonday(formatDate(new Date()));
+        function setPhysiqueMonday(dateStr) { currentPhysiqueMonday = dateStr; renderPhysiquePanel(); }
+        document.getElementById('physiquePrevWeek').addEventListener('click', ()=>setPhysiqueMonday(addWeek(currentPhysiqueMonday, -1)));
+        document.getElementById('physiqueNextWeek').addEventListener('click', ()=>setPhysiqueMonday(addWeek(currentPhysiqueMonday, 1)));
+        document.getElementById('todayPhysiqueBtn').addEventListener('click', ()=>setPhysiqueMonday(getMonday(formatDate(new Date()))));
+
+        function renderPhysiquePanel() {
+            document.getElementById('physiqueWeekLabel').textContent = currentPhysiqueMonday + ' 周';
+            const grid = document.getElementById('physiqueWeekGrid'); grid.innerHTML = '';
+            const dayNames = ['一','二','三','四','五','六','日'];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(currentPhysiqueMonday + 'T00:00:00');
+                d.setDate(d.getDate() + i);
+                const dateStr = formatDate(d);
+                const key = 'physique_' + dateStr;
+                const images = currentUser[key] || [];
+
+                const lastMonthDate = getMonthOffsetDate(dateStr, -1);
+                const threeMonthsAgoDate = getMonthOffsetDate(dateStr, -3);
+                const lastMonthImages = currentUser['physique_' + lastMonthDate] || [];
+                const threeMonthsAgoImages = currentUser['physique_' + threeMonthsAgoDate] || [];
+
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                cell.style.minHeight = '130px';
+                cell.style.fontSize = '10px';
+
+                let html = `周${dayNames[i]}<br>${dateStr.slice(5)}<br>`;
+                if (images.length > 0) {
+                    html += `<img src="${images[0]}" class="img-thumb-small" style="width:30px;height:30px;"> `;
+                } else {
+                    html += `<span style="color:#666;">-</span> `;
+                }
+                html += `<button class="small" style="padding:1px 6px; font-size:10px;">📷</button><br>`;
+
+                html += `<div class="physique-row"><span class="physique-label">上月</span>`;
+                if (lastMonthImages.length > 0) {
+                    html += `<img src="${lastMonthImages[0]}" class="img-thumb-small" data-date="${lastMonthDate}" style="width:20px;height:20px;">`;
+                } else {
+                    html += `<span style="color:#666;">无</span>`;
+                }
+                html += `</div>`;
+
+                html += `<div class="physique-row"><span class="physique-label">三月前</span>`;
+                if (threeMonthsAgoImages.length > 0) {
+                    html += `<img src="${threeMonthsAgoImages[0]}" class="img-thumb-small" data-date="${threeMonthsAgoDate}" style="width:20px;height:20px;">`;
+                } else {
+                    html += `<span style="color:#666;">无</span>`;
+                }
+                html += `</div>`;
+
+                cell.innerHTML = html;
+
+                cell.querySelector('button').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.getElementById('physiqueTargetDate').value = dateStr;
+                    document.getElementById('physiqueImageUpload').click();
+                });
+
+                if (images.length > 0) {
+                    cell.querySelector(`img[src="${images[0]}"]`).addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showPhysiqueViewer(dateStr, images, 0);
+                    });
+                }
+
+                cell.querySelectorAll('.img-thumb-small[data-date]').forEach(img => {
+                    img.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const targetDate = e.target.dataset.date;
+                        const targetImages = currentUser['physique_' + targetDate] || [];
+                        if (targetImages.length > 0) {
+                            showPhysiqueViewer(targetDate, targetImages, 0);
+                        }
+                    });
+                });
+
+                grid.appendChild(cell);
+            }
+        }
+
+        document.getElementById('physiqueImageUpload').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            const dateStr = document.getElementById('physiqueTargetDate').value;
+            if (!dateStr) return;
+            const statusEl = document.getElementById('physiqueUploadStatus'); statusEl.textContent = '正在上传...';
+            const key = 'physique_' + dateStr;
+            if (!currentUser[key]) currentUser[key] = [];
+            const promises = files.map(file => {
+                return new Promise((resolve, reject) => {
+                    if (file.size > 10*1024*1024) { reject(new Error(`图片 ${file.name} 超过10MB`)); return; }
+                    const reader = new FileReader();
+                    reader.onload = function(ev) { resolve(ev.target.result); };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            });
+            Promise.all(promises).then(results => {
+                currentUser[key].push(...results);
+                save();
+                renderPhysiquePanel();
+                statusEl.textContent = '上传完成';
+                setTimeout(()=> statusEl.textContent = '', 1500);
+            }).catch(err => { showToast(err.message); statusEl.textContent = '上传部分失败'; });
+            e.target.value = '';
+        });
+
+        function showPhysiqueViewer(dateStr, images, startIndex) {
+            let currentIdx = startIndex;
+            const modal = document.createElement('div'); modal.className = 'modal';
+            const content = `
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="image-viewer">
+                        <img src="${images[currentIdx]}" id="viewerImage">
+                        <div class="image-nav">
+                            <button id="prevImgBtn" ${currentIdx === 0 ? 'disabled' : ''}>上一张</button>
+                            <span>${currentIdx+1} / ${images.length}</span>
+                            <button id="nextImgBtn" ${currentIdx === images.length-1 ? 'disabled' : ''}>下一张</button>
+                        </div>
+                        <div style="display:flex; justify-content:center; gap:10px; margin-top:12px;">
+                            <button id="replaceImgBtn" class="small">替换</button>
+                            <button id="deleteImgBtn" class="small">删除</button>
+                        </div>
+                        <input type="file" id="replaceFileInput" accept="image/*" style="display:none;">
+                    </div>
+                </div>`;
+            modal.innerHTML = content;
+            document.body.appendChild(modal);
+            const closeModal = () => modal.remove();
+            modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+            const updateView = () => {
+                const arr = currentUser['physique_'+dateStr];
+                const imgEl = document.getElementById('viewerImage'); if (imgEl) imgEl.src = arr[currentIdx];
+                document.getElementById('prevImgBtn').disabled = currentIdx === 0;
+                document.getElementById('nextImgBtn').disabled = currentIdx === arr.length - 1;
+                document.querySelector('.image-nav span').textContent = `${currentIdx+1} / ${arr.length}`;
+            };
+            document.getElementById('prevImgBtn').addEventListener('click', ()=>{ if (currentIdx > 0) { currentIdx--; updateView(); } });
+            document.getElementById('nextImgBtn').addEventListener('click', ()=>{ if (currentIdx < images.length-1) { currentIdx++; updateView(); } });
+            document.getElementById('replaceImgBtn').addEventListener('click', ()=>{ document.getElementById('replaceFileInput').click(); });
+            document.getElementById('replaceFileInput').addEventListener('change', function(e) {
+                const file = e.target.files[0]; if (!file) return;
+                if (file.size > 10*1024*1024) return showToast('图片不超过10MB');
+                const reader = new FileReader();
+                reader.onload = function(ev) { currentUser['physique_'+dateStr][currentIdx] = ev.target.result; save(); updateView(); showToast('图片已替换'); };
+                reader.readAsDataURL(file);
+            });
+            document.getElementById('deleteImgBtn').addEventListener('click', ()=>{
+                const arr = currentUser['physique_'+dateStr]; arr.splice(currentIdx, 1);
+                if (arr.length === 0) delete currentUser['physique_'+dateStr];
+                save(); showToast('图片已删除');
+                if (arr && arr.length > 0) { if (currentIdx >= arr.length) currentIdx = arr.length - 1; updateView(); }
+                else { closeModal(); renderPhysiquePanel(); }
+            });
+        }
+
+        // ========== 朋友面板 ==========
+        function renderFriendList() {
+            const listDiv = document.getElementById('friendList');
+            if (!currentUser || !currentUser.friends.length) {
+                listDiv.innerHTML = '<p>暂无好友</p>';
+                document.getElementById('friendData').style.display = 'none';
+                return;
+            }
+            let html = '<h4>已添加好友</h4>';
+            currentUser.friends.forEach(uid => {
+                const user = allUsers[uid];
+                const name = user ? escapeHtml(user.username) : '未知用户';
+                html += `<div class="friend-list-item">
+                    <span>${name} (${uid})</span>
+                    <div>
+                        <button class="small viewFriendBtn" data-uid="${uid}">查看</button>
+                        <button class="small hideFriendBtn" style="margin-left:4px;">隐藏</button>
+                    </div>
+                </div>`;
+            });
+            listDiv.innerHTML = html;
+            document.querySelectorAll('.viewFriendBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentFriendUid = this.dataset.uid;
+                    displayFriendReport(currentFriendUid);
+                });
+            });
+            document.querySelectorAll('.hideFriendBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('friendData').style.display = 'none';
+                });
+            });
+            if (currentFriendUid && currentUser.friends.includes(currentFriendUid)) {
+                displayFriendReport(currentFriendUid);
+            } else {
+                document.getElementById('friendData').style.display = 'none';
+            }
+        }
+
+        document.getElementById('exportMyDataBtn').addEventListener('click', ()=>{
+            if (!currentUser) return;
+            const exportData = JSON.stringify(currentUser);
+            const encoded = btoa(unescape(encodeURIComponent(exportData)));
+            navigator.clipboard.writeText(encoded).then(() => {
+                showToast('数据已复制到剪贴板，发送给好友即可');
+            }).catch(() => {
+                prompt('请手动复制以下数据：', encoded);
+            });
+        });
+
+        document.getElementById('importFriendDataBtn').addEventListener('click', ()=>{
+            const encoded = prompt('请粘贴好友的数据文本：');
+            if (!encoded) return;
+            try {
+                const json = decodeURIComponent(escape(atob(encoded)));
+                const imported = JSON.parse(json);
+                if (!imported.uid || !imported.username) throw new Error('无效数据');
+                allUsers[imported.uid] = imported;
+                save();
+                showToast('好友数据已导入，请刷新列表');
+                renderFriendList();
+            } catch (e) {
+                showToast('数据格式错误，导入失败');
+            }
+        });
+
+        document.getElementById('addFriendBtn').addEventListener('click', ()=>{
+            const uid = document.getElementById('friendUidInput').value.trim();
+            if(!uid) return showToast('请输入UID');
+            if(uid === currentUser.uid) return showToast('不能添加自己');
+            if(currentUser.friends.includes(uid)) {
+                showToast('该好友已在列表中');
+            } else {
+                currentUser.friends.push(uid);
+                save();
+                showToast('好友添加成功');
+                renderFriendList();
+            }
+            currentFriendUid = uid;
+            displayFriendReport(uid);
+        });
+
+        document.getElementById('refreshFriendDataBtn').addEventListener('click', ()=>{
+            if (currentFriendUid) {
+                displayFriendReport(currentFriendUid);
+                showToast('好友数据已刷新');
+            } else {
+                showToast('请先选择一个好友查看');
+            }
+            renderFriendList();
+        });
+
+        function displayFriendReport(uid) {
+            const user = allUsers[uid];
+            const cont = document.getElementById('friendData');
+            if (!user) {
+                cont.innerHTML = '<p>好友暂无数据，请让好友使用“导出我的数据”发送给你，然后点击“导入好友数据”。</p>';
+                cont.style.display = 'block';
+                return;
+            }
+            cont.innerHTML = generateReportContentForUser(user);
+            cont.style.display = 'block';
+        }
+
+        function generateReportContentForUser(user) {
+            const today = formatDate(new Date());
+            const thisMonday = getMonday(today);
+            const lastMonday = addWeek(thisMonday, -1);
+            const thisPlan = user.weeklyPlans[thisMonday] || { days:{}, weekType:null };
+            const thisWeekType = thisPlan.weekType;
+            let compareMonday = lastMonday;
+            if (thisWeekType) {
+                const allMondays = Object.keys(user.weeklyPlans).filter(d => d < thisMonday).sort((a,b)=>b.localeCompare(a));
+                for (let d of allMondays) {
+                    if (user.weeklyPlans[d].weekType === thisWeekType) {
+                        compareMonday = d;
+                        break;
+                    }
+                }
+            }
+            const comparePlan = user.weeklyPlans[compareMonday] || { days:{} };
+
+            function aggregateExercises(plan) {
+                const result = {};
+                for (let i=0; i<7; i++) {
+                    const day = plan.days[i] || { muscles: [] };
+                    if (!day.muscles) continue;
+                    day.muscles.forEach(muscle => {
+                        if (!muscle.muscleGroup || muscle.muscleGroup === '休息') return;
+                        if (!result[muscle.muscleGroup]) result[muscle.muscleGroup] = {};
+                        (muscle.exercises || []).forEach(e => {
+                            if (!result[muscle.muscleGroup][e.name]) result[muscle.muscleGroup][e.name] = { sets:0, totalWeight:0 };
+                            result[muscle.muscleGroup][e.name].sets += e.sets;
+                            result[muscle.muscleGroup][e.name].totalWeight += e.weight * e.sets;
+                        });
+                    });
+                }
+                return result;
+            }
+
+            const thisData = aggregateExercises(thisPlan);
+            const compareData = aggregateExercises(comparePlan);
+
+            let html = '<h3>📊 '+escapeHtml(user.username)+' 本周周报</h3>';
+            const thisWeekW = user.weightRecords.filter(r=>r.date>=thisMonday);
+            const lastWeekW = user.weightRecords.filter(r=>r.date>=lastMonday && r.date<thisMonday);
+            const avgThis = thisWeekW.length ? (thisWeekW.reduce((s,r)=>s+r.weight,0)/thisWeekW.length).toFixed(1) : null;
+            const avgLast = lastWeekW.length ? (lastWeekW.reduce((s,r)=>s+r.weight,0)/lastWeekW.length).toFixed(1) : null;
+            html += '<p>体重：本周平均 '+(avgThis||'-')+' kg，';
+            if (avgLast) html += '上周 '+(avgLast||'-')+' kg';
+            html += '</p>';
+
+            html += '<h4>💪 训练动作对比</h4>';
+            const allMuscles = new Set([...Object.keys(thisData), ...Object.keys(compareData)]);
+            if (allMuscles.size === 0) {
+                html += '<p>本周无训练记录</p>';
+            } else {
+                html += '<table class="stats-table"><tr><th>肌群</th><th>动作</th><th>组数</th><th>均重(kg)</th><th>组数变化</th><th>重量变化</th></tr>';
+                allMuscles.forEach(mg => {
+                    const thisMuscleData = thisData[mg] || {};
+                    const compareMuscleData = compareData[mg] || {};
+                    const allExercises = new Set([...Object.keys(thisMuscleData), ...Object.keys(compareMuscleData)]);
+                    html += `<tr class="muscle-group-header"><td colspan="6" style="text-align:center;">${escapeHtml(mg)}</td></tr>`;
+                    allExercises.forEach(ex => {
+                        const cur = thisMuscleData[ex] || { sets:0, totalWeight:0 };
+                        const prev = compareMuscleData[ex] || { sets:0, totalWeight:0 };
+                        const curAvg = cur.sets ? (cur.totalWeight/cur.sets).toFixed(1) : '0';
+                        const prevAvg = prev.sets ? (prev.totalWeight/prev.sets).toFixed(1) : '0';
+                        let setChange = '-', weightChange = '-';
+                        if (prev.sets > 0) {
+                            const setPct = ((cur.sets - prev.sets)/prev.sets*100).toFixed(0);
+                            setChange = (setPct>0?'+':'')+setPct+'%';
+                            const weightPct = ((parseFloat(curAvg) - parseFloat(prevAvg))/parseFloat(prevAvg)*100).toFixed(0);
+                            weightChange = (weightPct>0?'+':'')+weightPct+'%';
+                        } else if (cur.sets > 0) {
+                            setChange = '新'; weightChange = '新';
+                        }
+                        html += `<tr>
+                            <td></td>
+                            <td>${escapeHtml(ex)}</td>
+                            <td>${cur.sets}</td>
+                            <td>${curAvg}</td>
+                            <td>${setChange}</td>
+                            <td>${weightChange}</td>
+                        </tr>`;
+                    });
+                });
+                html += '</table>';
+            }
+            const typeLabel = thisWeekType ? (thisWeekType==='strength'?'增力周':'容量周') : '上周';
+            html += `<p style="margin-top:10px;">对比基准：${typeLabel} (${compareMonday})</p>`;
+            return html;
+        }
+
+        // 导航
+        document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click', ()=>switchPanel(b.dataset.panel)));
+
+        // 自动登录
+        const lastUID = localStorage.getItem('lastLoggedUID');
+        if(lastUID && allUsers[lastUID]){ currentUser = allUsers[lastUID]; showMain(); }
+        window.addEventListener('beforeunload', ()=>{ if(currentUser) localStorage.setItem('lastLoggedUID', currentUser.uid); });
+    });
+</script>
+</body>
+</html>
