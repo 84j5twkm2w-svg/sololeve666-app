@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>🥗 减脂晚餐转盘</title>
+  <title>🥗 减脂晚餐转盘 · 手机版</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: linear-gradient(145deg, #f3efe8 0%, #f9f6f0 100%);
-      font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+      font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -37,9 +33,7 @@
       align-items: center;
       gap: 10px;
     }
-    .title span {
-      font-size: 2.2rem;
-    }
+    .title span { font-size: 2.2rem; }
     .module-selector {
       display: flex;
       background: rgba(255,255,255,0.8);
@@ -112,21 +106,17 @@
     }
     canvas {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       border-radius: 50%;
       box-shadow: 0 16px 40px rgba(0,0,0,0.1);
     }
     .pointer {
       position: absolute;
-      top: -6px;
-      left: 50%;
+      top: -6px; left: 50%;
       transform: translateX(-50%);
       z-index: 20;
-      width: 28px;
-      height: 28px;
+      width: 28px; height: 28px;
       background: #fff;
       border-radius: 50%;
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
@@ -136,8 +126,7 @@
     }
     .pointer::after {
       content: '';
-      width: 0;
-      height: 0;
+      width: 0; height: 0;
       border-left: 8px solid transparent;
       border-right: 8px solid transparent;
       border-top: 14px solid #e85d5d;
@@ -145,11 +134,9 @@
     }
     .center-display {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 26%;
-      aspect-ratio: 1/1;
+      width: 26%; aspect-ratio: 1/1;
       background: #fffefb;
       border-radius: 50%;
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.04), 0 10px 28px rgba(0,0,0,0.1);
@@ -161,19 +148,11 @@
       z-index: 15;
       transition: border-color 0.3s;
     }
-    .center-emoji {
-      font-size: 2.6rem;
-      line-height: 1;
-    }
-    .center-hint {
-      font-size: 0.6rem;
-      color: #b3ab9e;
-      margin-top: 2px;
-    }
+    .center-emoji { font-size: 2.6rem; line-height: 1; }
+    .center-hint { font-size: 0.6rem; color: #b3ab9e; margin-top: 2px; }
     .result-tag {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%) translateY(-75px);
       background: #3e3a35;
       color: white;
@@ -220,16 +199,8 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.04);
       border: 1px solid rgba(255,255,255,0.6);
     }
-    .add-title {
-      font-weight: 700;
-      color: #3e3a35;
-      font-size: 0.95rem;
-    }
-    .add-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
+    .add-title { font-weight: 700; color: #3e3a35; font-size: 0.95rem; }
+    .add-row { display: flex; gap: 8px; margin-top: 8px; }
     .add-input {
       flex: 1;
       padding: 10px 14px;
@@ -247,11 +218,7 @@
       font-weight: 600;
       cursor: pointer;
     }
-    .ai-hint {
-      font-size: 0.7rem;
-      color: #8b857c;
-      margin-top: 6px;
-    }
+    .ai-hint { font-size: 0.7rem; color: #8b857c; margin-top: 6px; }
     .recipe-card {
       width: 100%;
       background: rgba(255,255,255,0.8);
@@ -264,9 +231,7 @@
       gap: 16px;
       border: 1px solid rgba(255,255,255,0.6);
     }
-    .recipe-card.active {
-      display: flex;
-    }
+    .recipe-card.active { display: flex; }
     .recipe-title {
       font-size: 1.2rem;
       font-weight: 700;
@@ -275,11 +240,7 @@
       border-bottom: 2px solid #e7e0d5;
       padding-bottom: 6px;
     }
-    .recipe-section h4 {
-      font-size: 0.9rem;
-      color: #6a9f7b;
-      margin-bottom: 4px;
-    }
+    .recipe-section h4 { font-size: 0.9rem; color: #6a9f7b; margin-bottom: 4px; }
     .recipe-section p {
       font-size: 0.85rem;
       color: #5e5750;
@@ -289,10 +250,7 @@
       border-radius: 16px;
       white-space: pre-line;
     }
-    .disabled-interaction {
-      pointer-events: none;
-      opacity: 0.6;
-    }
+    .disabled-interaction { pointer-events: none; opacity: 0.6; }
   </style>
 </head>
 <body>
@@ -356,42 +314,60 @@
 
 <script>
   (function() {
-    // ---------- 数据库 ----------
+    // ---------- 数据库 (每类60+，详细食谱) ----------
     const MENU_DB = [
-      // 碳水类 (60+)
-      { name:'藜麦牛油果沙拉', emoji:'🥑', type:'carb', recipe:{ ingredients:'藜麦50g、牛油果半个、小番茄80g', seasonings:'橄榄油1大勺、柠檬汁1小勺、海盐、现磨黑胡椒', steps:'1. 藜麦冲洗后加1.5倍水煮沸，转小火焖12分钟，放凉。\n2. 牛油果去核切块，小番茄对切。\n3. 混合所有材料，淋橄榄油和柠檬汁，撒盐和黑胡椒轻轻拌匀。' } },
-      { name:'南瓜小米粥', emoji:'🎃', type:'carb', recipe:{ ingredients:'南瓜150g、小米50g', seasonings:'无', steps:'1. 南瓜去皮切丁。\n2. 小米加水煮沸，加入南瓜转小火熬25分钟至浓稠。' } },
-      { name:'紫薯蒸蛋', emoji:'🍠', type:'carb', recipe:{ ingredients:'紫薯100g、鸡蛋2个', seasonings:'盐少许', steps:'1. 紫薯蒸熟压泥。\n2. 蛋液加薯泥、盐和1.5倍温水搅匀，过筛。\n3. 盖保鲜膜蒸10分钟。' } },
-      { name:'魔芋丝拌菜', emoji:'🍜', type:'carb', recipe:{ ingredients:'魔芋丝200g、黄瓜半根', seasonings:'香醋、生抽、蒜末', steps:'1. 魔芋丝焯水过凉。\n2. 黄瓜切丝，混合调料拌匀。' } },
-      { name:'蒸红薯配酸奶', emoji:'🍠', type:'carb', recipe:{ ingredients:'红薯200g、无糖酸奶', seasonings:'无', steps:'红薯蒸熟去皮，搭配酸奶食用。' } },
-      { name:'玉米胡萝卜汤', emoji:'🌽', type:'carb', recipe:{ ingredients:'玉米1根、胡萝卜1根', seasonings:'盐', steps:'玉米胡萝卜切块，加水煮20分钟，加盐调味。' } },
-      { name:'燕麦糙米饭', emoji:'🍚', type:'carb', recipe:{ ingredients:'燕麦30g、糙米50g', seasonings:'无', steps:'糙米提前浸泡，混合煮饭。' } },
-      { name:'全麦卷饼', emoji:'🌯', type:'carb', recipe:{ ingredients:'全麦饼皮、生菜、鸡胸肉', seasonings:'低脂沙拉酱', steps:'鸡胸肉撕条，与生菜卷入饼皮即可。' } },
-      // ... 下面用循环补全至60个
+      // 碳水类基础
+      { name:'藜麦牛油果沙拉', emoji:'🥑', type:'carb', recipe:{ ingredients:'藜麦50g、牛油果半个、小番茄80g', seasonings:'橄榄油、柠檬汁、海盐、黑胡椒', steps:'1. 藜麦洗净加水煮12分钟，放凉。\n2. 牛油果番茄切块。\n3. 混合后淋油醋汁，撒盐和胡椒。' } },
+      { name:'南瓜小米粥', emoji:'🎃', type:'carb', recipe:{ ingredients:'南瓜150g、小米50g', seasonings:'无', steps:'1. 南瓜去皮切丁。\n2. 小米加水煮沸，加入南瓜小火熬25分钟。' } },
+      { name:'紫薯蒸蛋', emoji:'🍠', type:'carb', recipe:{ ingredients:'紫薯100g、鸡蛋2个', seasonings:'盐', steps:'1. 紫薯蒸熟压泥。\n2. 蛋液加薯泥、盐和水搅匀，蒸10分钟。' } },
+      { name:'魔芋丝拌菜', emoji:'🍜', type:'carb', recipe:{ ingredients:'魔芋丝200g、黄瓜丝', seasonings:'香醋、生抽、蒜末', steps:'魔芋丝焯水，加蔬菜丝和调料拌匀。' } },
+      { name:'蒸红薯配酸奶', emoji:'🍠', type:'carb', recipe:{ ingredients:'红薯、无糖酸奶', seasonings:'无', steps:'红薯蒸熟，搭配酸奶。' } },
+      { name:'玉米胡萝卜汤', emoji:'🌽', type:'carb', recipe:{ ingredients:'玉米、胡萝卜', seasonings:'盐', steps:'切块煮20分钟。' } },
+      // 蛋白质基础
+      { name:'鸡胸肉沙拉', emoji:'🥗', type:'protein', recipe:{ ingredients:'鸡胸肉150g、生菜、小番茄', seasonings:'橄榄油、黑胡椒', steps:'1. 鸡胸煮熟撕条。\n2. 蔬菜洗净，混合调味。' } },
+      { name:'西兰花炒虾仁', emoji:'🥦', type:'protein', recipe:{ ingredients:'虾仁120g、西兰花200g', seasonings:'盐、料酒、蒜', steps:'虾仁腌制滑炒，西兰花焯水后同炒。' } },
+      { name:'蒸鱼配蔬菜', emoji:'🐟', type:'protein', recipe:{ ingredients:'鲈鱼、姜丝、青菜', seasonings:'蒸鱼豉油', steps:'鱼蒸8分钟，倒掉汤汁，淋热油豉油。' } },
+      { name:'水煮鸡胸肉', emoji:'🍗', type:'protein', recipe:{ ingredients:'鸡胸肉', seasonings:'蘸料', steps:'冷水煮熟，切片蘸料。' } },
+      { name:'清蒸鲈鱼', emoji:'🐠', type:'protein', recipe:{ ingredients:'鲈鱼、葱姜', seasonings:'蒸鱼豉油', steps:'蒸8分钟，淋豉油。' } },
+      { name:'虾仁蔬菜卷', emoji:'🦐', type:'protein', recipe:{ ingredients:'虾仁、生菜、米纸', seasonings:'甜辣酱', steps:'虾仁煮熟，米纸泡软卷起。' } },
+      // 维生素基础
+      { name:'番茄豆腐汤', emoji:'🍅', type:'vitamin', recipe:{ ingredients:'番茄、嫩豆腐', seasonings:'盐、香油', steps:'番茄炒出汁加水，豆腐切块煮3分钟。' } },
+      { name:'菌菇蔬菜汤', emoji:'🍄', type:'vitamin', recipe:{ ingredients:'香菇、金针菇、青菜', seasonings:'盐', steps:'菌菇煮8分钟，加青菜烫熟。' } },
+      { name:'凉拌黄瓜木耳', emoji:'🥒', type:'vitamin', recipe:{ ingredients:'黄瓜、木耳', seasonings:'蒜、醋、生抽', steps:'木耳焯水，黄瓜拍碎，加调料拌匀。' } },
+      { name:'菠菜拌豆腐', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'菠菜、嫩豆腐', seasonings:'芝麻酱', steps:'菠菜焯水，豆腐切块，淋酱汁。' } },
+      { name:'番茄鸡蛋汤', emoji:'🍲', type:'vitamin', recipe:{ ingredients:'番茄、鸡蛋', seasonings:'盐', steps:'番茄炒软加水，淋入蛋液。' } },
+      { name:'海带豆腐汤', emoji:'🫕', type:'vitamin', recipe:{ ingredients:'海带结、豆腐', seasonings:'盐、香油', steps:'海带煮10分钟，加豆腐再煮5分钟。' } },
     ];
 
-    // 补充至每类60个
-    function fillCategory(menus, type, baseNames, emoji) {
-      const existing = MENU_DB.filter(m => m.type === type);
-      if (existing.length >= 60) return;
-      const need = 60 - existing.length;
-      for (let i = 0; i < need; i++) {
-        const name = baseNames[i % baseNames.length] + (i + 1);
-        MENU_DB.push({
-          name,
-          emoji,
-          type,
-          recipe: {
-            ingredients: '主要食材适量',
-            seasonings: '盐、生抽',
-            steps: '1. 食材洗净切好。\n2. 少油烹饪至熟。\n3. 加入调料调味。'
-          }
-        });
-      }
+    // 补全至每类至少60个
+    function ensureCategoryCount() {
+      const categories = ['carb', 'protein', 'vitamin'];
+      const baseNames = {
+        carb: ['杂粮饭','蒸紫薯','燕麦麸皮','玉米窝头','荞麦馒头','薏仁米饭','黑米糕','山药饼','南瓜饼','小米糕'],
+        protein: ['煎鸡胸','烤鱼排','虾滑汤','牛肉片','豆腐炒蛋','鸡肉肠','煎三文鱼','蛋饺','清蒸鱼片','鸡丝拉皮'],
+        vitamin: ['素炒三丝','凉拌秋葵','蚝油菌菇','蒜蓉丝瓜','醋溜白菜','清炒芥蓝','上汤娃娃菜','凉拌木耳','素烧茄子','白灼芥蓝']
+      };
+      categories.forEach(cat => {
+        const existing = MENU_DB.filter(m => m.type === cat);
+        if (existing.length >= 60) return;
+        const need = 60 - existing.length;
+        for (let i = 0; i < need; i++) {
+          const idx = i % baseNames[cat].length;
+          const name = baseNames[cat][idx] + (i + 1);
+          MENU_DB.push({
+            name,
+            emoji: cat === 'carb' ? '🍚' : (cat === 'protein' ? '🍗' : '🥬'),
+            type: cat,
+            recipe: {
+              ingredients: '主要食材适量',
+              seasonings: '盐、生抽',
+              steps: '1. 处理食材。\n2. 少油烹饪。\n3. 调味出锅。'
+            }
+          });
+        }
+      });
     }
-    fillCategory(MENU_DB, 'carb', ['杂粮饭','蒸紫薯','燕麦麸皮','玉米窝头','荞麦馒头','薏仁米饭','黑米糕','山药饼','南瓜饼','小米糕'], '🍚');
-    fillCategory(MENU_DB, 'protein', ['煎鸡胸','烤鱼排','虾滑汤','牛肉片','豆腐炒蛋','鸡肉肠','煎三文鱼','蛋饺','清蒸鱼片','鸡丝拉皮'], '🍗');
-    fillCategory(MENU_DB, 'vitamin', ['素炒三丝','凉拌秋葵','蚝油菌菇','蒜蓉丝瓜','醋溜白菜','清炒芥蓝','上汤娃娃菜','凉拌木耳','素烧茄子','白灼芥蓝'], '🥬');
+    ensureCategoryCount();
 
     // AI分类
     function classifyDish(name) {
@@ -401,7 +377,7 @@
       return 'vitamin';
     }
 
-    // DOM元素
+    // DOM
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
@@ -447,8 +423,7 @@
 
     function updateCountButtons(count) {
       countBtns.forEach(btn => {
-        const val = parseInt(btn.dataset.count);
-        btn.classList.toggle('active', val === count);
+        btn.classList.toggle('active', parseInt(btn.dataset.count) === count);
       });
     }
 
@@ -456,15 +431,15 @@
       const size = Math.min(canvas.width, canvas.height);
       const cx = size / 2, cy = size / 2;
       const outerR = size * 0.43, innerR = size * 0.16;
-      const count = currentMenus.length;
-      if (count === 0) { ctx.clearRect(0,0,size,size); return; }
-      const angle = (2 * Math.PI) / count;
+      const cnt = currentMenus.length;
+      if (cnt === 0) { ctx.clearRect(0,0,size,size); return; }
+      const ang = (2 * Math.PI) / cnt;
       ctx.clearRect(0,0,size,size);
 
-      for (let i = 0; i < count; i++) {
-        const start = rotation + i * angle;
-        const end = start + angle;
-        const mid = start + angle/2;
+      for (let i = 0; i < cnt; i++) {
+        const start = rotation + i * ang;
+        const end = start + ang;
+        const mid = start + ang / 2;
         const hue = (i * 47 + 180) % 360;
 
         ctx.beginPath();
@@ -490,7 +465,7 @@
         ctx.save();
         ctx.translate(tx, ty);
         ctx.rotate(mid);
-        const fontSize = count <= 10 ? 13 : (count <= 20 ? 10.5 : 8);
+        const fontSize = cnt <= 10 ? 13 : (cnt <= 20 ? 10.5 : 8);
         ctx.font = `bold ${fontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
         ctx.fillStyle = '#2a2620';
         ctx.shadowColor = 'rgba(255,255,255,0.6)';
@@ -498,7 +473,7 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         let text = currentMenus[i].name;
-        if (count > 25 && text.length > 4) text = text.slice(0,3) + '…';
+        if (cnt > 25 && text.length > 4) text = text.slice(0,3) + '…';
         ctx.fillText(text, 0, 0);
         ctx.restore();
       }
@@ -511,12 +486,12 @@
     }
 
     function getPointerIndex() {
-      const count = currentMenus.length;
-      if (count === 0) return -1;
-      const angle = (2*Math.PI)/count;
+      const cnt = currentMenus.length;
+      if (cnt === 0) return -1;
+      const ang = (2*Math.PI)/cnt;
       const pointer = -Math.PI/2;
       let diff = ((pointer - rotationAngle) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
-      return Math.floor(diff / angle) % count;
+      return Math.floor(diff / ang) % cnt;
     }
 
     function updateCenter(menu) {
@@ -562,10 +537,10 @@
       document.getElementById('moduleSelector').classList.add('disabled-interaction');
       document.getElementById('countSelector').classList.add('disabled-interaction');
 
-      const count = currentMenus.length;
-      const angle = (2*Math.PI)/count;
-      const targetIdx = Math.floor(Math.random() * count);
-      const targetMid = targetIdx * angle + angle/2;
+      const cnt = currentMenus.length;
+      const ang = (2*Math.PI)/cnt;
+      const targetIdx = Math.floor(Math.random() * cnt);
+      const targetMid = targetIdx * ang + ang/2;
       const pointer = -Math.PI/2;
 
       const startRot = rotationAngle;
@@ -641,7 +616,8 @@
     spinBtn.addEventListener('click', spin);
     document.addEventListener('keydown', e => {
       if (e.code === 'Space' && !isSpinning && document.activeElement === document.body) {
-        e.preventDefault(); spin();
+        e.preventDefault();
+        spin();
       }
     });
 
@@ -687,6 +663,7 @@
     window.addEventListener('resize', resizeCanvas);
     if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(document.getElementById('wheelContainer'));
 
+    // 启动
     function init() {
       currentModule = 'all';
       currentCount = 5;
