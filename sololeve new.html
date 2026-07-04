@@ -2,708 +2,770 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="我独自升级">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0f0c29">
-  <meta name="description" content="我独自升级 - 健身记录与形体追踪">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f0c29'/><text y='0.85em' x='50' text-anchor='middle' font-size='70'>⚡</text></svg>">
-  <title>⚡我独自升级 - 健身记录</title>
-  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi5oiR54us6Ieq5Y2H57qnIC0g5YGl6Lqr6K6w5b2VIiwic2hvcnRfbmFtZSI6IuaIkeeLrOiHquWNh+e6pyIsImRlc2NyaXB0aW9uIjoi5YGl6Lqr6K6w5b2V5LiO5b2i5L2T6L275Liq5bqU55SoIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6InBvcnRyYWl0IiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjBjMjkiLCJ0aGVtZV9jb2xvciI6IiMwZjBjMjkiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxOTIgMTkyJyUzRSUzQ3JlY3Qgd2lkdGg9JzE5MicgaGVpZ2h0PScxOTInIHJ4PSczMicgZmlsbD0nJTIzMGYwYzI5Jy8lM0UlM0N0ZXh0IHg9Jzk2JyB5PScxMjAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nMTAwJyUzRSVFMiU5QSVBMSUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
-  <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>🥗 减脂晚餐转盘 · 手机版</title>
   <style>
-    :root {
-      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-      --safe-area-top: env(safe-area-inset-top, 0px);
-      --bg-deep: #0f0c29;
-      --bg-card: #1f2b4d;
-      --accent: #ff6b6b;
-      --accent2: #ee5a24;
-      --text: #e0e0e0;
-      --text-dim: #aaa;
-      --border: #3a4a6b;
-      --tap-min: 44px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',system-ui,-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
-    input,select,textarea,[contenteditable] { -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
-    html { height:100%; overflow:hidden; }
-    body { background:linear-gradient(160deg,var(--bg-deep) 0%,#1a1040 25%,#302b63 50%,#24243e 75%,#0f0c29 100%); background-attachment:fixed; color:var(--text); height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 8px; padding-top:var(--safe-area-top); padding-bottom:var(--safe-area-bottom); -webkit-overflow-scrolling:touch; overscroll-behavior-y:contain; }
-    .container { width:100%; max-width:500px; background:rgba(22,33,62,0.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-radius:24px; box-shadow:0 20px 60px rgba(0,0,0,0.55),0 0 0 1px rgba(255,255,255,0.06) inset; padding:16px 12px; display:flex; flex-direction:column; flex:1; overflow:hidden; margin:8px 0; }
-    h2,h3 { text-align:center; margin-bottom:10px; letter-spacing:0.5px; }
-    .login-box h2 { color:var(--accent); font-size:28px; letter-spacing:2px; text-shadow:0 0 30px rgba(255,107,107,0.4); }
-    input,select,button { width:100%; padding:13px 14px; margin:6px 0; border-radius:14px; border:none; font-size:16px; outline:none; transition:0.2s ease; -webkit-appearance:none; appearance:none; min-height:var(--tap-min); }
-    input,select { background:var(--bg-card); color:#eee; border:1px solid var(--border); font-size:15px; }
-    input:focus,select:focus { border-color:var(--accent); box-shadow:0 0 10px rgba(255,107,107,0.35); background:#243358; }
-    input::placeholder { color:#777; }
-    button { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:white; font-weight:600; cursor:pointer; letter-spacing:0.4px; min-height:var(--tap-min); touch-action:manipulation; border:1px solid rgba(255,255,255,0.1); }
-    button:active { transform:scale(0.96); opacity:0.9; transition:0.08s; }
-    button:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
-    button.secondary { background:linear-gradient(135deg,#4a69bd,#1e3799); }
-    button.ghost { background:transparent; border:1px solid var(--border); color:var(--text); }
-    button.small { width:auto; padding:8px 13px; font-size:13px; min-height:36px; border-radius:10px; }
-    .hidden { display:none !important; }
-    .nav { display:flex; justify-content:space-between; margin:10px 0; gap:4px; flex-wrap:wrap; }
-    .nav button { flex:1; min-width:48px; background:var(--bg-card); border:1px solid var(--border); padding:10px 3px; font-size:11px; border-radius:12px; min-height:42px; letter-spacing:0; }
-    .nav button.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:white; font-weight:700; box-shadow:0 4px 15px rgba(255,107,107,0.3); }
-    .chart-wrapper { margin:10px 0; }
-    #weightChartDiv { width:100%; height:280px; border-radius:14px; overflow:hidden; min-height:260px; background:rgba(31,43,77,0.5); }
-    .week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
-    .day-cell { background:var(--bg-card); padding:4px 2px; border-radius:10px; text-align:center; cursor:pointer; font-size:10px; transition:0.15s; min-height:100px; display:flex; flex-direction:column; justify-content:center; align-items:center; touch-action:manipulation; border:1px solid transparent; }
-    .day-cell:active { background:#2a3a5e; transform:scale(0.95); border-color:var(--accent); }
-    .day-cell.today { box-shadow:0 0 12px rgba(255,107,107,0.4); border-color:var(--accent); }
-    .stats-card { background:var(--bg-card); padding:10px; border-radius:12px; margin:6px 0; border:1px solid rgba(255,255,255,0.04); }
-    .week-navigator { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; gap:4px; flex-wrap:wrap; }
-    .week-navigator button { width:auto; padding:8px 12px; font-size:13px; min-height:38px; }
-    .file-upload-wrapper { display:flex; gap:6px; align-items:center; margin:6px 0; flex-wrap:wrap; }
-    .file-upload-wrapper input[type="file"] { display:none; }
-    .file-btn { flex:1; text-align:center; padding:12px; background:var(--bg-card); border:1px solid var(--border); border-radius:14px; cursor:pointer; font-size:14px; min-height:var(--tap-min); display:flex; align-items:center; justify-content:center; }
-    .file-btn:active { background:#2a3a5e; }
-    .download-btn { background:#4a69bd; color:white; border:none; min-height:var(--tap-min); }
-    .period-select { margin:6px 0; }
-    .period-select select { font-size:15px; padding:12px; }
-    .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); display:flex; justify-content:center; align-items:center; z-index:1000; padding:12px; animation:fadeIn 0.2s ease; }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    .modal-content { background:#16213e; padding:18px; border-radius:20px; width:95%; max-width:500px; max-height:82vh; overflow-y:auto; color:#eee; position:relative; -webkit-overflow-scrolling:touch; box-shadow:0 20px 50px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.08); }
-    .img-thumb { width:34px; height:34px; object-fit:cover; border-radius:6px; margin:2px; cursor:pointer; border:1px solid rgba(255,255,255,0.2); }
-    .img-thumb-small { width:22px; height:22px; object-fit:cover; border-radius:4px; margin:1px; cursor:pointer; border:1px solid rgba(255,255,255,0.15); }
-    .image-viewer img { max-width:100%; max-height:55vh; border-radius:10px; object-fit:contain; }
-    .image-nav { display:flex; justify-content:space-between; align-items:center; margin-top:10px; gap:8px; }
-    .image-nav button { min-height:40px; font-size:14px; padding:8px 16px; }
-    .friend-list-item { display:flex; justify-content:space-between; align-items:center; padding:10px 6px; border-bottom:1px solid #333; flex-wrap:wrap; gap:6px; }
-    table.stats-table { width:100%; border-collapse:collapse; font-size:11px; text-align:center; }
-    table.stats-table th,table.stats-table td { padding:5px 3px; border-bottom:1px solid #333; text-align:center; }
-    .muscle-group-header { background:#0f3460; font-weight:bold; font-size:12px; }
-    .toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#2d2d2d; color:#fff; padding:14px 24px; border-radius:30px; font-size:14px; z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.3s ease; box-shadow:0 6px 20px rgba(0,0,0,0.6); max-width:85vw; text-align:center; white-space:pre-line; }
-    .phase-btn-small { padding:10px 8px; border-radius:10px; background:var(--bg-card); text-align:center; cursor:pointer; font-weight:bold; flex:1; user-select:none; touch-action:manipulation; min-height:42px; display:flex; align-items:center; justify-content:center; font-size:13px; border:1px solid var(--border); }
-    .phase-btn-small.strength.active { background:#e74c3c; color:#fff; border-color:#c0392b; }
-    .phase-btn-small.volume.active { background:#3498db; color:#fff; border-color:#2980b9; }
-    .muscle-block { background:#0f3460; padding:8px; border-radius:10px; margin-bottom:6px; border:1px solid rgba(255,255,255,0.05); }
-    .ex-table { width:100%; font-size:11px; border-collapse:collapse; margin:5px 0; }
-    .ex-table th,.ex-table td { padding:3px 2px; border-bottom:1px solid #333; text-align:center; }
-    .ex-table input,.ex-table select { margin:0; padding:4px; font-size:11px; width:100%; min-height:30px; border-radius:8px; }
-    .ex-list-container { max-height:160px; overflow-y:auto; margin-bottom:5px; -webkit-overflow-scrolling:touch; }
-    .physique-row { display:flex; align-items:center; justify-content:center; gap:2px; margin:1px 0; }
-    .physique-label { font-size:7px; color:var(--text-dim); width:32px; text-align:right; padding-right:2px; }
-    .collapsible { cursor:pointer; touch-action:manipulation; min-height:var(--tap-min); display:flex; align-items:center; padding:12px; }
-    .collapsible-content { display:none; margin-top:4px; }
-    .collapsible.active+.collapsible-content { display:block; }
-    #installBanner { display:none; background:linear-gradient(135deg,#1a3a5c,#2c5f8a); color:#fff; padding:13px 16px; border-radius:14px; margin:8px 0; text-align:center; cursor:pointer; font-weight:bold; animation:pulse 2s infinite; touch-action:manipulation; min-height:var(--tap-min); align-items:center; justify-content:center; gap:8px; font-size:14px; border:1px solid rgba(255,255,255,0.2); }
-    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.5)} 50%{box-shadow:0 0 0 14px rgba(255,107,107,0)} }
-    .quick-login-item { background:var(--bg-card); padding:10px; border-radius:12px; margin:6px 0; display:flex; align-items:center; justify-content:space-between; cursor:pointer; border:1px solid var(--border); font-size:15px; min-height:48px; }
-    .quick-login-item:active { background:#2a3a5e; }
-    #auth-screen { flex:1; display:flex; align-items:center; justify-content:center; }
-    #main-screen { flex:1; display:flex; flex-direction:column; overflow:hidden; min-height:0; }
-    #panel-container { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:8px; }
-    .panel { height:100%; }
-    .toggle-ex-list-btn { background:transparent; border:none; color:#ccc; font-size:18px; padding:4px 8px; min-height:auto; width:auto; cursor:pointer; }
-    .delete-muscle-btn { margin-left: auto; }
-    @media (max-width:370px) { .nav button { font-size:10px; padding:8px 2px; min-height:38px; } .day-cell { font-size:8px; min-height:85px; padding:3px 1px; } .container { padding:12px 8px; border-radius:18px; } h2 { font-size:20px; } .phase-btn-small { font-size:11px; padding:8px 4px; } }
-    @media (min-width:420px) { .day-cell { min-height:120px; font-size:11px; } .nav button { font-size:13px; padding:10px 6px; } }
+    body {
+      background: linear-gradient(145deg, #f3efe8 0%, #f9f6f0 100%);
+      font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .app {
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+    .title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #3e3a35;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .title span {
+      font-size: 2.2rem;
+    }
+    .module-selector {
+      display: flex;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 48px;
+      padding: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      gap: 4px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .module-btn {
+      padding: 10px 22px;
+      border: none;
+      background: transparent;
+      border-radius: 32px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #5c554c;
+      cursor: pointer;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .module-btn.active {
+      background: #6a9f7b;
+      color: white;
+      box-shadow: 0 4px 14px rgba(106,159,123,0.4);
+    }
+    .count-selector {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 48px;
+      padding: 6px 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      gap: 4px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .count-label {
+      font-size: 0.85rem;
+      color: #5c554c;
+      padding: 0 8px;
+      font-weight: 500;
+    }
+    .count-btn {
+      width: 40px;
+      height: 36px;
+      border-radius: 28px;
+      border: 2px solid transparent;
+      background: transparent;
+      font-weight: 600;
+      color: #5c554c;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+    }
+    .count-btn.active {
+      background: #6a9f7b;
+      color: white;
+      border-color: #6a9f7b;
+      box-shadow: 0 4px 12px rgba(106,159,123,0.35);
+      transform: scale(1.06);
+    }
+    .wheel-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1/1;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+    }
+    .pointer {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      width: 28px;
+      height: 28px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pointer::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 14px solid #e85d5d;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+    }
+    .center-display {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 26%;
+      aspect-ratio: 1/1;
+      background: #fffefb;
+      border-radius: 50%;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.04), 0 10px 28px rgba(0,0,0,0.1);
+      border: 4px solid #e0d9ce;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 15;
+      transition: border-color 0.3s;
+    }
+    .center-emoji {
+      font-size: 2.6rem;
+      line-height: 1;
+    }
+    .center-hint {
+      font-size: 0.6rem;
+      color: #b3ab9e;
+      margin-top: 2px;
+    }
+    .result-tag {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translateY(-75px);
+      background: #3e3a35;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 25;
+    }
+    .result-tag.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(-85px);
+    }
+    .spin-btn {
+      background: #6a9f7b;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 14px 44px;
+      border-radius: 50px;
+      box-shadow: 0 10px 24px rgba(106,159,123,0.35);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .spin-btn:disabled {
+      background: #c2bdb2;
+      box-shadow: none;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .add-section {
+      width: 100%;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 18px 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .add-title {
+      font-weight: 700;
+      color: #3e3a35;
+      font-size: 0.95rem;
+    }
+    .add-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .add-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 18px;
+      border: 1px solid #ddd7cc;
+      background: white;
+      font-size: 0.9rem;
+    }
+    .add-btn {
+      background: #6a9f7b;
+      color: white;
+      border: none;
+      border-radius: 18px;
+      padding: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .ai-hint {
+      font-size: 0.7rem;
+      color: #8b857c;
+      margin-top: 6px;
+    }
+    .recipe-card {
+      width: 100%;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .recipe-card.active {
+      display: flex;
+    }
+    .recipe-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #3e3a35;
+      text-align: center;
+      border-bottom: 2px solid #e7e0d5;
+      padding-bottom: 6px;
+    }
+    .recipe-section h4 {
+      font-size: 0.9rem;
+      color: #6a9f7b;
+      margin-bottom: 4px;
+    }
+    .recipe-section p {
+      font-size: 0.85rem;
+      color: #5e5750;
+      line-height: 1.7;
+      background: #faf8f5;
+      padding: 10px 14px;
+      border-radius: 16px;
+      white-space: pre-line;
+    }
+    .disabled-interaction {
+      pointer-events: none;
+      opacity: 0.6;
+    }
   </style>
 </head>
 <body>
-<div class="container" id="app">
-  <div id="installBanner">📲 点击安装到手机主屏幕</div>
+<div class="app">
+  <div class="title"><span>🥗</span> 减脂晚餐转盘</div>
 
-  <!-- 登录界面 -->
-  <div id="auth-screen">
-    <div class="login-box" style="width:100%;">
-      <h2>⚡ 我独自升级</h2>
-      <input type="text" id="username" placeholder="用户名" autocomplete="username" inputmode="text" autocapitalize="none">
-      <input type="password" id="password" placeholder="密码" autocomplete="current-password">
-      <button type="button" id="loginBtn">登 录</button>
-      <button type="button" id="regBtn" class="secondary">注 册 新 账 号</button>
-      <div id="quickLoginArea" style="margin-top:8px;"></div>
-      <p id="authMsg" style="text-align:center;margin-top:10px;min-height:20px;font-weight:bold;font-size:14px;"></p>
+  <div class="module-selector" id="moduleSelector">
+    <button class="module-btn active" data-module="all">🌱 全部</button>
+    <button class="module-btn" data-module="carb">🍚 碳水</button>
+    <button class="module-btn" data-module="protein">🍗 蛋白质</button>
+    <button class="module-btn" data-module="vitamin">🥬 维生素</button>
+  </div>
+
+  <div class="count-selector" id="countSelector">
+    <span class="count-label">🍽️ 数量</span>
+    <button class="count-btn active" data-count="5">5</button>
+    <button class="count-btn" data-count="10">10</button>
+    <button class="count-btn" data-count="20">20</button>
+    <button class="count-btn" data-count="30">30</button>
+    <button class="count-btn" data-count="40">40</button>
+    <button class="count-btn" data-count="50">50</button>
+  </div>
+
+  <div class="wheel-container" id="wheelContainer">
+    <canvas id="wheelCanvas"></canvas>
+    <div class="pointer"></div>
+    <div class="result-tag" id="resultTag">🎯 准备转动</div>
+    <div class="center-display" id="centerDisplay">
+      <span class="center-emoji" id="centerEmoji">🎯</span>
+      <span class="center-hint" id="centerHint">点击旋转</span>
     </div>
   </div>
 
-  <!-- 主界面 -->
-  <div id="main-screen" class="hidden">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-      <h2 style="color:#ff6b6b;margin:0;font-size:22px;">⚡ 我独自升级</h2>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button type="button" id="storageInfoBtn" class="small ghost" style="font-size:10px;">💾</button>
-        <button type="button" id="logoutBtn" class="small ghost">退出</button>
-      </div>
+  <button class="spin-btn" id="spinBtn"><span>🎰</span> 开始旋转</button>
+
+  <div class="add-section">
+    <div class="add-title">✨ 自定义添加菜品 (AI自动归类)</div>
+    <div class="add-row">
+      <input type="text" class="add-input" id="newDishName" placeholder="输入菜名，如：凉拌鸡丝" maxlength="20">
+      <button class="add-btn" id="addDishBtn">➕ 添加</button>
     </div>
-    <p style="font-size:12px;opacity:0.8;margin:4px 0;">👤 <span id="myName"></span> | UID: <span id="myUid"></span></p>
-    <div style="display:flex;gap:6px;margin:6px 0;flex-wrap:wrap;">
-      <button id="weeklyReportBtn" class="secondary" style="flex:1;min-width:110px;">📈 本周统计</button>
-      <button id="refreshReportBtn" class="small secondary" style="flex:1;min-width:70px;">🔄 刷新</button>
+    <div class="ai-hint">🤖 系统会根据菜名自动判断碳水/蛋白质/维生素分类</div>
+  </div>
+
+  <div class="recipe-card" id="recipeCard">
+    <div class="recipe-title" id="recipeName"></div>
+    <div class="recipe-section">
+      <h4>🥬 备料</h4>
+      <p id="recipeIngredients"></p>
     </div>
-    <div class="nav">
-      <button type="button" class="active" data-panel="weight">⚖️体重</button>
-      <button type="button" data-panel="strength">💪力量</button>
-      <button type="button" data-panel="onerm">🏋️1PR</button>
-      <button type="button" data-panel="physique">📷形体</button>
-      <button type="button" data-panel="friends">👥朋友</button>
+    <div class="recipe-section">
+      <h4>🧂 调料</h4>
+      <p id="recipeSeasonings"></p>
     </div>
-    <div id="panel-container">
-      <!-- 体重面板 -->
-      <div id="weight-panel" class="panel">
-        <div class="period-select"><select id="periodDropdown"><option value="7d">7天</option><option value="14d">14天</option><option value="30d">30天</option><option value="this_month">本月</option><option value="last_month">上月</option><option value="60d">60天</option><option value="90d">90天</option><option value="this_year">本年</option><option value="last_year">去年</option><option value="all" selected>全部</option></select></div>
-        <div class="stats-card">
-          <p style="margin-bottom:4px;font-weight:600;">📅 今日体重快速记录</p>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <input id="quickWeight" type="number" placeholder="体重 (kg)" step="0.1" style="flex:2;min-width:90px;" inputmode="decimal">
-            <select id="quickPhase" style="flex:1;min-width:70px;"><option value="bulk">增肌期</option><option value="cut">减脂期</option></select>
-          </div>
-          <button id="quickRecordBtn">记录今日体重</button>
-        </div>
-        <div class="collapsible stats-card" id="manualDateToggle" style="font-size:14px;">📆 手动选择日期记录 <span style="font-size:11px;opacity:0.7;">(点击展开)</span></div>
-        <div class="collapsible-content">
-          <div class="stats-card">
-            <input type="date" id="weightDate">
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <input type="number" id="weightValue" placeholder="体重 (kg)" step="0.1" style="flex:2;min-width:90px;" inputmode="decimal">
-              <select id="weightPhaseSelect" style="flex:1;min-width:70px;"><option value="bulk">增肌期</option><option value="cut">减脂期</option></select>
-            </div>
-            <button id="addWeightBtn">记录体重</button>
-          </div>
-        </div>
-        <div class="chart-wrapper"><div id="weightChartDiv"></div></div>
-        <div id="weightSuggestion" class="stats-card" style="color:#ff9f43;font-size:13px;"></div>
-        <div class="file-upload-wrapper">
-          <label for="xlsxUpload" class="file-btn">📂 上传 Excel 批量导入</label>
-          <input type="file" id="xlsxUpload" accept=".xlsx,.xls">
-          <button id="mapXlsxBtn" class="small download-btn" disabled>映射替换</button>
-          <button id="downloadTemplateBtn" class="small download-btn">⬇️ 模板</button>
-        </div>
-      </div>
-
-      <!-- 力量面板 -->
-      <div id="strength-panel" class="panel hidden">
-        <div class="week-navigator">
-          <button id="prevWeekBtn" class="small">◀ 上周</button>
-          <span id="currentWeekLabel" style="font-size:13px;font-weight:600;"></span>
-          <button id="nextWeekBtn" class="small">下周 ▶</button>
-          <button id="todayStrengthBtn" class="small">今天</button>
-        </div>
-        <div class="week-grid" id="weekGrid"></div>
-        <div style="display:flex;gap:6px;margin:8px 0;">
-          <div id="strengthWeekBtn" class="phase-btn-small strength">🔥 增力周</div>
-          <div id="volumeWeekBtn" class="phase-btn-small volume">💧 容量周</div>
-        </div>
-        <div id="dayDetail" style="margin-top:10px;"></div>
-      </div>
-
-      <!-- 1PR面板 -->
-      <div id="onerm-panel" class="panel hidden">
-        <h3>最大1PR推算</h3>
-        <select id="prMuscleGroup"><option value="">选择肌群</option><option value="胸部">胸部</option><option value="背部">背部</option><option value="腿部">腿部</option><option value="肩部">肩部</option><option value="手臂">手臂</option></select>
-        <select id="prExercise" class="hidden"></select>
-        <button id="addPrExerciseBtn" class="small secondary hidden">+ 添加动作</button>
-        <input type="number" id="repsInput" placeholder="完成的次数" inputmode="numeric">
-        <input type="number" id="weightInput" placeholder="使用的重量 (kg)" inputmode="decimal">
-        <select id="prFormula" style="margin:6px 0;">
-          <option value="epley" selected>Epley (1+次数/30)</option>
-          <option value="brzycki">Brzycki (36/(37-次数))</option>
-          <option value="lombardi">Lombardi (次数^0.1)</option>
-          <option value="mayhew">Mayhew</option>
-          <option value="lander">Lander</option>
-        </select>
-        <button id="calc1RM">计 算</button>
-        <p id="rmResult" style="text-align:center;font-size:30px;margin-top:10px;color:#ff6b6b;font-weight:700;"></p>
-        <p id="formulaUsed" style="text-align:center;color:#aaa;font-size:13px;"></p>
-      </div>
-
-      <!-- 形体面板 -->
-      <div id="physique-panel" class="panel hidden">
-        <div class="week-navigator">
-          <button id="physiquePrevWeek" class="small">◀ 上周</button>
-          <span id="physiqueWeekLabel" style="font-size:13px;font-weight:600;"></span>
-          <button id="physiqueNextWeek" class="small">下周 ▶</button>
-          <button id="todayPhysiqueBtn" class="small">今天</button>
-        </div>
-        <div class="week-grid" id="physiqueWeekGrid"></div>
-        <input type="file" id="physiqueImageUpload" accept="image/*" multiple style="display:none;">
-        <input type="hidden" id="physiqueTargetDate">
-        <div id="physiqueUploadStatus" style="text-align:center;margin-top:6px;color:#aaa;font-size:12px;"></div>
-      </div>
-
-      <!-- 朋友面板 -->
-      <div id="friends-panel" class="panel hidden">
-        <h3>朋友数据</h3>
-        <input type="text" id="friendUidInput" placeholder="输入好友UID" inputmode="numeric" style="text-align:center;">
-        <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
-          <button id="addFriendBtn" style="flex:1;min-width:90px;">添加并查看</button>
-          <button id="refreshFriendDataBtn" class="small secondary" style="flex:1;min-width:90px;">刷新当前好友</button>
-        </div>
-        <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
-          <button id="exportMyDataBtn" class="small secondary">📤 复制数据</button>
-          <button id="exportMyDataFileBtn" class="small secondary">💾 导出文件</button>
-          <button id="importFriendDataBtn" class="small secondary">📥 导入好友数据</button>
-        </div>
-        <div id="friendList" class="stats-card" style="margin-top:6px;"></div>
-        <div id="friendData" class="stats-card" style="margin-top:10px;display:none;"></div>
-      </div>
+    <div class="recipe-section">
+      <h4>👨‍🍳 制作方法</h4>
+      <p id="recipeSteps"></p>
     </div>
   </div>
 </div>
-<div id="toast" class="toast"></div>
 
 <script>
   (function() {
-    // PWA 安装
-    let deferredPrompt = null;
-    const installBanner = document.getElementById('installBanner');
-    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if(installBanner) installBanner.style.display='flex'; });
-    installBanner?.addEventListener('click', () => {
-      if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(r => { if(r.outcome==='accepted') installBanner.style.display='none'; deferredPrompt=null; }); }
-      else { installBanner.style.display='none'; showToast('💡 请使用浏览器菜单中的"添加到主屏幕"'); }
-    });
-    window.addEventListener('appinstalled', () => { if(installBanner) installBanner.style.display='none'; });
+    // ---------- 菜单数据库 (每类60+，专业厨师级制作步骤) ----------
+    let MENU_DB = [
+      { name:'藜麦牛油果沙拉', emoji:'🥑', type:'carb', recipe:{ ingredients:'藜麦50g、牛油果半个、小番茄80g', seasonings:'橄榄油1大勺、柠檬汁1小勺、海盐、现磨黑胡椒', steps:'1. 藜麦用细筛冲洗，加1.5倍水煮沸后转小火焖12分钟至水分收干，放凉。\n2. 牛油果对半切开去核，切1.5cm方块；小番茄对半切。\n3. 将冷却的藜麦与牛油果、番茄混合，淋橄榄油、柠檬汁，撒盐和黑胡椒轻轻翻拌均匀，静置5分钟入味。' } },
+      { name:'南瓜小米粥', emoji:'🎃', type:'carb', recipe:{ ingredients:'南瓜150g、小米50g', seasonings:'无', steps:'1. 南瓜去皮去籽切2cm小丁。\n2. 小米淘洗后加清水800ml，大火煮沸。\n3. 加入南瓜丁，转小火熬煮25分钟，期间搅拌防止粘底，至粥稠南瓜软烂即可。' } },
+      { name:'紫薯蒸蛋', emoji:'🍠', type:'carb', recipe:{ ingredients:'紫薯100g、鸡蛋2个', seasonings:'盐少许', steps:'1. 紫薯去皮切块蒸熟，趁热压成细腻薯泥。\n2. 鸡蛋打散，加入薯泥、少许盐和1.5倍温水搅匀，过筛两次。\n3. 倒入蒸碗，盖保鲜膜扎孔，入沸水蒸锅小火蒸10分钟，关火焖2分钟。' } },
+      { name:'魔芋丝拌菜', emoji:'🍜', type:'carb', recipe:{ ingredients:'魔芋丝200g、黄瓜半根、胡萝卜少许', seasonings:'香醋1勺、生抽半勺、蒜末、辣椒油少许', steps:'1. 魔芋丝开水下锅焯烫2分钟，捞出过凉沥干。\n2. 黄瓜、胡萝卜切细丝。\n3. 将魔芋丝与蔬菜丝放入碗中，加香醋、生抽、蒜末、辣椒油拌匀，冷藏10分钟更爽口。' } },
+      { name:'蒸红薯配酸奶', emoji:'🍠', type:'carb', recipe:{ ingredients:'红薯200g、无糖酸奶100g', seasonings:'无', steps:'1. 红薯刷洗干净，带皮蒸25分钟至筷子可轻松穿透。\n2. 去皮切块，装入碗中，淋上冷藏过的无糖酸奶，可撒少许坚果碎。' } },
+      { name:'玉米胡萝卜汤', emoji:'🌽', type:'carb', recipe:{ ingredients:'甜玉米1根、胡萝卜1根', seasonings:'盐少许', steps:'1. 玉米切3cm段，胡萝卜去皮切滚刀块。\n2. 锅中加清水1L，放入玉米和胡萝卜，大火煮沸后转中火煮20分钟。\n3. 加少许盐调味，关火焖5分钟让甜味释放。' } },
+      { name:'燕麦糙米饭', emoji:'🍚', type:'carb', recipe:{ ingredients:'燕麦30g、糙米50g', seasonings:'无', steps:'1. 糙米提前浸泡3小时。\n2. 燕麦和泡好的糙米混合，加水至1.5倍高度，电饭煲糙米模式煮熟。\n3. 煮好后翻松再焖10分钟。' } },
+      { name:'全麦卷饼', emoji:'🌯', type:'carb', recipe:{ ingredients:'全麦饼皮1张、生菜2片、鸡胸肉50g', seasonings:'低脂沙拉酱', steps:'1. 鸡胸肉煮熟撕成细条。\n2. 全麦饼皮平底锅小火每面烘15秒回软。\n3. 铺生菜、鸡胸肉条，挤少量沙拉酱，紧实卷起，对半切开。' } },
+      { name:'山药红枣粥', emoji:'🍲', type:'carb', recipe:{ ingredients:'山药100g、红枣5颗、小米50g', seasonings:'无', steps:'1. 山药去皮切小块，红枣去核切片。\n2. 小米淘洗后与山药红枣一起加水800ml，大火煮沸转小火熬20分钟，至粥粘稠。' } },
+      { name:'蒸土豆泥', emoji:'🥔', type:'carb', recipe:{ ingredients:'土豆2个', seasonings:'黑胡椒、盐、牛奶少许', steps:'1. 土豆去皮切块蒸20分钟至软。\n2. 趁热压泥，加少许热牛奶、盐、黑胡椒搅拌至细腻顺滑。' } },
+      { name:'红豆薏米粥', emoji:'🫘', type:'carb', recipe:{ ingredients:'红豆30g、薏米30g', seasonings:'少许冰糖', steps:'1. 红豆薏米提前浸泡4小时。\n2. 加足量水大火煮沸转小火熬40分钟至开花软烂，加冰糖调味。' } },
+      { name:'荞麦面', emoji:'🍝', type:'carb', recipe:{ ingredients:'荞麦面80g、黄瓜丝、胡萝卜丝', seasonings:'低盐酱油1勺、米醋半勺', steps:'1. 荞麦面入沸水煮4分钟，捞出冰水过凉。\n2. 沥干装盘，放蔬菜丝，淋酱油醋汁，撒白芝麻。' } },
+      { name:'黑米粥', emoji:'🍚', type:'carb', recipe:{ ingredients:'黑米50g、糯米20g', seasonings:'无', steps:'1. 黑米糯米洗净浸泡2小时。\n2. 加水1L，大火煮沸转小火熬35分钟，不时搅拌。' } },
+      { name:'蒸荔浦芋头', emoji:'🥔', type:'carb', recipe:{ ingredients:'荔浦芋头300g', seasonings:'无', steps:'1. 芋头去皮切滚刀块。\n2. 水开后上锅蒸20分钟，筷子轻松穿透即可。' } },
+      { name:'玉米饼', emoji:'🌮', type:'carb', recipe:{ ingredients:'玉米面100g、鸡蛋1个、水适量', seasonings:'盐少许', steps:'1. 玉米面与鸡蛋、水、盐调成可流动糊状。\n2. 不粘锅刷薄油，小火倒入面糊摊平，每面烙2分钟至金黄。' } },
+      { name:'绿豆粥', emoji:'🫘', type:'carb', recipe:{ ingredients:'绿豆50g、大米30g', seasonings:'无', steps:'1. 绿豆提前泡3小时，大米洗净。\n2. 一起加水大火煮沸转小火熬30分钟至绿豆开花。' } },
+      { name:'蒸紫薯', emoji:'🍠', type:'carb', recipe:{ ingredients:'紫薯2个', seasonings:'无', steps:'紫薯洗净，冷水上锅蒸25分钟，用筷子能轻易扎透即可。' } },
+      { name:'小米发糕', emoji:'🍞', type:'carb', recipe:{ ingredients:'小米面150g、酵母2g、温水120ml', seasonings:'代糖少许', steps:'1. 酵母用温水化开，加入小米面和代糖搅成厚糊。\n2. 倒入模具发酵至2倍大，水开上锅蒸25分钟，关火焖3分钟。' } },
+      { name:'藜麦饭', emoji:'🍚', type:'carb', recipe:{ ingredients:'藜麦50g、大米50g', seasonings:'无', steps:'1. 藜麦和大米混合洗净。\n2. 加水至1.5倍，电饭煲正常煮饭模式。' } },
+      { name:'蒸贝贝南瓜', emoji:'🎃', type:'carb', recipe:{ ingredients:'贝贝南瓜1个', seasonings:'无', steps:'南瓜洗净，整个放入蒸锅，上汽后蒸20分钟，切开去籽即可。' } },
+    ];
 
-    let toastTimer;
-    function showToast(msg, duration=2000) {
-      const t = document.getElementById('toast'); if(!t) return;
-      t.textContent = msg; t.style.opacity = '1'; t.style.pointerEvents = 'auto';
-      clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.style.opacity='0'; t.style.pointerEvents='none'; }, duration);
-    }
+    const PROTEIN_MENUS = [
+      { name:'鸡胸肉沙拉', emoji:'🥗', type:'protein', recipe:{ ingredients:'鸡胸肉150g、生菜100g、小番茄80g', seasonings:'橄榄油、黑胡椒、盐', steps:'1. 鸡胸肉冷水入锅，加姜片料酒，煮沸后转小火焖8分钟，关火再焖5分钟，取出撕条。\n2. 生菜洗净撕块，小番茄对切。\n3. 将所有材料混合，淋橄榄油，撒黑胡椒和盐，轻轻拌匀。' } },
+      { name:'西兰花炒虾仁', emoji:'🥦', type:'protein', recipe:{ ingredients:'虾仁120g、西兰花200g、蒜末', seasonings:'盐、料酒、生抽', steps:'1. 虾仁开背去线，用料酒、少许盐腌10分钟。\n2. 西兰花拆小朵，沸水焯1分钟捞出。\n3. 热锅少油爆香蒜末，下虾仁滑炒至变色，倒入西兰花，加生抽、盐大火快炒30秒出锅。' } },
+      { name:'蒸鱼配蔬菜', emoji:'🐟', type:'protein', recipe:{ ingredients:'鲈鱼1条约400g、姜丝、葱丝、青菜', seasonings:'蒸鱼豉油、料酒', steps:'1. 鱼处理干净，鱼身划三刀，抹料酒，铺姜丝。\n2. 水开上锅大火蒸8分钟，倒掉盘中汤汁。\n3. 铺上葱丝，淋热油激香，再浇蒸鱼豉油。搭配焯水青菜。' } },
+      { name:'水煮鸡胸肉', emoji:'🍗', type:'protein', recipe:{ ingredients:'鸡胸肉200g', seasonings:'蘸料：生抽、蒜末、小米辣', steps:'鸡胸肉冷水下锅，加姜片，煮沸后转小火煮8分钟，关火焖5分钟，捞出切片，蘸调料食用。' } },
+      { name:'清蒸鲈鱼', emoji:'🐠', type:'protein', recipe:{ ingredients:'鲈鱼、葱姜', seasonings:'蒸鱼豉油', steps:'鱼洗净划刀，放葱姜蒸8分钟，倒掉汁水，换新葱丝，淋热油和豉油。' } },
+      { name:'虾仁蔬菜卷', emoji:'🦐', type:'protein', recipe:{ ingredients:'虾仁、生菜、米纸', seasonings:'甜辣酱', steps:'虾仁煮熟，米纸温水泡软，铺生菜和虾仁，卷紧，蘸酱食用。' } },
+      { name:'烤三文鱼', emoji:'🐟', type:'protein', recipe:{ ingredients:'三文鱼排150g、芦笋', seasonings:'黑胡椒、海盐、柠檬', steps:'三文鱼用厨房纸吸干，抹盐、黑胡椒、柠檬汁腌制15分钟。烤箱预热200℃，烤12分钟。芦笋同时烤制。' } },
+      { name:'芹菜炒牛肉', emoji:'🥩', type:'protein', recipe:{ ingredients:'牛里脊100g、芹菜150g', seasonings:'生抽、料酒、淀粉', steps:'牛肉逆纹切丝，加生抽、料酒、淀粉抓匀。热锅凉油滑熟牛肉盛出，炒芹菜，再混合快速翻炒。' } },
+      { name:'彩椒炒鸡胸', emoji:'🫑', type:'protein', recipe:{ ingredients:'鸡胸肉150g、彩椒2个', seasonings:'生抽、黑胡椒', steps:'鸡胸切丁，用生抽黑胡椒腌10分钟。彩椒切块。少油煎鸡丁至金黄，加入彩椒大火翻炒1分钟。' } },
+      { name:'芦笋炒虾仁', emoji:'🌱', type:'protein', recipe:{ ingredients:'芦笋200g、虾仁100g', seasonings:'盐、蒜', steps:'芦笋去老根切段焯水。虾仁滑炒变色，加入芦笋、盐快速翻炒。' } },
+      { name:'冬瓜排骨汤', emoji:'🍖', type:'protein', recipe:{ ingredients:'排骨200g、冬瓜300g', seasonings:'盐、姜片', steps:'排骨冷水焯去血沫。另起锅加水、姜片、排骨炖30分钟，加冬瓜块再煮15分钟至透明，盐调味。' } },
+      { name:'柠檬烤鸡胸', emoji:'🍋', type:'protein', recipe:{ ingredients:'鸡胸肉1块、柠檬半个', seasonings:'黑胡椒、盐、迷迭香', steps:'鸡胸肉划几刀，用柠檬汁、盐、黑胡椒、迷迭香腌制30分钟，烤箱200℃烤20分钟。' } },
+      { name:'菌菇鸡胸汤', emoji:'🍄', type:'protein', recipe:{ ingredients:'鸡胸肉100g、菌菇150g', seasonings:'盐、姜丝', steps:'鸡胸切片，菌菇撕开。水开下姜丝、菌菇煮5分钟，放入鸡胸片煮至变白，盐调味。' } },
+      { name:'花菜炒虾仁', emoji:'🥦', type:'protein', recipe:{ ingredients:'花菜200g、虾仁100g', seasonings:'蒜、盐', steps:'花菜拆小朵焯水。虾仁腌制滑炒，加入花菜、蒜末翻炒均匀。' } },
+      { name:'番茄炖牛腩', emoji:'🍅', type:'protein', recipe:{ ingredients:'牛腩200g、番茄2个', seasonings:'生抽、料酒、姜', steps:'牛腩切块焯水。番茄炒出汁，加牛腩、生抽、料酒、热水，炖1.5小时至软烂。' } },
+      { name:'清蒸鳕鱼', emoji:'🐟', type:'protein', recipe:{ ingredients:'鳕鱼200g、葱姜', seasonings:'蒸鱼豉油', steps:'鳕鱼放姜片，水开蒸8分钟，倒掉汁水，铺葱丝，淋热油豉油。' } },
+      { name:'鸡蛋豆腐羹', emoji:'🥚', type:'protein', recipe:{ ingredients:'鸡蛋2个、嫩豆腐100g', seasonings:'盐、生抽', steps:'豆腐捣碎与蛋液混合，加盐、生抽搅匀，过滤去泡沫，盖保鲜膜蒸10分钟。' } },
+      { name:'口蘑炒鸡胸', emoji:'🍄', type:'protein', recipe:{ ingredients:'鸡胸肉100g、口蘑150g', seasonings:'生抽、黑胡椒', steps:'鸡胸切片，口蘑切片。少油煎鸡胸至白，加入口蘑翻炒出水，加生抽黑胡椒调味。' } },
+      { name:'豆腐虾仁煲', emoji:'🍲', type:'protein', recipe:{ ingredients:'嫩豆腐1盒、虾仁80g、娃娃菜', seasonings:'盐、白胡椒', steps:'娃娃菜铺砂锅底，放豆腐块、虾仁，加水、盐，大火煮开转小火煲8分钟，撒白胡椒。' } },
+      { name:'番茄鱼片汤', emoji:'🍅', type:'protein', recipe:{ ingredients:'鱼片150g、番茄2个', seasonings:'盐、姜丝', steps:'番茄去皮炒出汁，加水煮开。鱼片用盐和淀粉抓匀，一片片下锅，变色即关火。' } },
+    ];
 
-    // 数据持久化
-    const STORAGE_KEY = 'solo_leveling_users_v2';
-    const LOGIN_HISTORY_KEY = 'solo_login_history_v2';
-    let allUsers = {};
-    let imgDB = null;
+    const VITAMIN_MENUS = [
+      { name:'番茄豆腐汤', emoji:'🍅', type:'vitamin', recipe:{ ingredients:'番茄2个、嫩豆腐200g', seasonings:'盐、香油、葱花', steps:'1. 番茄切块，锅中少油炒至出沙。\n2. 加清水600ml煮沸，豆腐切块入锅煮3分钟。\n3. 加盐调味，淋香油，撒葱花出锅。' } },
+      { name:'菌菇蔬菜汤', emoji:'🍄', type:'vitamin', recipe:{ ingredients:'香菇3朵、金针菇100g、青菜', seasonings:'盐、白胡椒粉', steps:'1. 香菇切片，金针菇去根。\n2. 水开下菌菇煮8分钟，加青菜烫1分钟，盐和白胡椒粉调味。' } },
+      { name:'凉拌黄瓜木耳', emoji:'🥒', type:'vitamin', recipe:{ ingredients:'黄瓜1根、泡发木耳80g', seasonings:'蒜末、香醋、生抽、香油', steps:'1. 木耳撕小朵焯水2分钟，过凉。\n2. 黄瓜拍碎切块，与木耳混合。\n3. 加入蒜末、香醋、生抽、香油拌匀。' } },
+      { name:'菠菜拌豆腐', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'菠菜200g、嫩豆腐150g', seasonings:'芝麻酱1勺、生抽、醋', steps:'1. 菠菜焯水挤干切段，豆腐切块。\n2. 芝麻酱用温水调开，加生抽、醋搅匀。\n3. 豆腐菠菜装盘，淋酱汁。' } },
+      { name:'番茄鸡蛋汤', emoji:'🍲', type:'vitamin', recipe:{ ingredients:'番茄2个、鸡蛋1个', seasonings:'盐、葱花', steps:'番茄炒软加水煮开，淋入蛋液形成蛋花，加盐撒葱花。' } },
+      { name:'海带豆腐汤', emoji:'🫕', type:'vitamin', recipe:{ ingredients:'海带结100g、豆腐150g', seasonings:'盐、香油', steps:'海带结洗净煮10分钟，加入豆腐块再煮5分钟，盐和香油调味。' } },
+      { name:'苦瓜炒蛋', emoji:'🥒', type:'vitamin', recipe:{ ingredients:'苦瓜1根、鸡蛋2个', seasonings:'盐', steps:'苦瓜去瓤切片，焯水去苦味。鸡蛋炒散，加入苦瓜快速翻炒，盐调味。' } },
+      { name:'清炒时蔬', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'任意时蔬300g', seasonings:'蒜末、盐', steps:'蔬菜洗净切段，热锅爆香蒜，下蔬菜大火快炒，变软加盐出锅。' } },
+      { name:'豆腐蔬菜煲', emoji:'🍲', type:'vitamin', recipe:{ ingredients:'豆腐、白菜、菌菇', seasonings:'生抽、盐', steps:'白菜铺底，放豆腐、菌菇，加水、生抽，煮10分钟，盐调味。' } },
+      { name:'西葫芦炒蛋', emoji:'🥒', type:'vitamin', recipe:{ ingredients:'西葫芦1个、鸡蛋2个', seasonings:'盐', steps:'西葫芦切片，鸡蛋炒熟，再炒西葫芦至软，混合调味。' } },
+      { name:'凉拌海带丝', emoji:'🌊', type:'vitamin', recipe:{ ingredients:'海带丝150g', seasonings:'蒜末、醋、生抽、辣椒油', steps:'海带丝煮熟过凉，加调料拌匀冷藏。' } },
+      { name:'芹菜香干', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'芹菜200g、香干100g', seasonings:'盐、生抽', steps:'香干切条，芹菜切段。少油炒香干，加入芹菜翻炒至断生，调味。' } },
+      { name:'萝卜丝汤', emoji:'🥕', type:'vitamin', recipe:{ ingredients:'白萝卜200g', seasonings:'盐、白胡椒、葱花', steps:'萝卜去皮切细丝，加水煮至透明，加盐、白胡椒，撒葱花。' } },
+      { name:'烤蔬菜拼盘', emoji:'🥘', type:'vitamin', recipe:{ ingredients:'南瓜、西葫芦、彩椒各100g', seasonings:'橄榄油、盐、黑胡椒', steps:'蔬菜切块，拌橄榄油、盐、黑胡椒，铺烤盘，200℃烤20分钟。' } },
+      { name:'蒜蓉西兰花', emoji:'🧄', type:'vitamin', recipe:{ ingredients:'西兰花300g、蒜末', seasonings:'盐', steps:'西兰花焯水1分钟。蒜末爆香，加入西兰花、盐快速翻炒。' } },
+      { name:'紫菜蛋花汤', emoji:'🍲', type:'vitamin', recipe:{ ingredients:'紫菜、鸡蛋', seasonings:'盐、香油', steps:'水开下紫菜，淋入蛋液，加盐香油。' } },
+      { name:'凉拌豆芽', emoji:'🌱', type:'vitamin', recipe:{ ingredients:'豆芽200g', seasonings:'蒜末、醋、生抽', steps:'豆芽焯水30秒，过凉沥干，加调料拌匀。' } },
+      { name:'洋葱炒蛋', emoji:'🧅', type:'vitamin', recipe:{ ingredients:'洋葱1个、鸡蛋2个', seasonings:'盐', steps:'洋葱切丝炒软，倒入蛋液炒至凝固。' } },
+      { name:'清炒豆苗', emoji:'🌿', type:'vitamin', recipe:{ ingredients:'豆苗200g', seasonings:'蒜、盐', steps:'大火快炒豆苗，加盐和蒜末，1分钟出锅。' } },
+      { name:'蒸茄子', emoji:'🍆', type:'vitamin', recipe:{ ingredients:'茄子1个', seasonings:'蒜末、生抽、醋', steps:'茄子蒸熟撕条，浇上蒜末、生抽、醋调的汁。' } },
+      { name:'白灼青菜', emoji:'🥬', type:'vitamin', recipe:{ ingredients:'菜心250g', seasonings:'蚝油、蒜', steps:'青菜焯熟装盘，淋蚝油和蒜末，浇热油。' } },
+    ];
 
-    function loadAllUsers() {
-      try { const raw = localStorage.getItem(STORAGE_KEY); allUsers = raw ? JSON.parse(raw) : {}; if(typeof allUsers!=='object'||allUsers===null) allUsers={}; } catch(e) { allUsers={}; }
-      let saveFlag = false;
-      for(const uid in allUsers) {
-        const u = allUsers[uid];
-        if(!u.weightRecords) { u.weightRecords=[]; saveFlag=true; }
-        if(!u.weeklyPlans) { u.weeklyPlans={}; saveFlag=true; }
-        if(!u.friends) { u.friends=[]; saveFlag=true; }
-        if(!u.customExercises) { u.customExercises={}; saveFlag=true; }
-      }
-      if(saveFlag) saveAllUsers();
-    }
-    function saveAllUsers() {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allUsers)); } catch(e) {
-        if(e.name==='QuotaExceededError') { showToast('⚠️ 存储空间不足！',4000); cleanOldImages(); try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(allUsers)); } catch(e2) {} }
-      }
-    }
-    function getLoginHistory() { try { return JSON.parse(localStorage.getItem(LOGIN_HISTORY_KEY) || '[]'); } catch(e) { return []; } }
-    function addLoginHistory(username, uid) {
-      let h = getLoginHistory().filter(i => i.uid !== uid);
-      h.unshift({ username, uid, time: Date.now() }); if(h.length > 5) h.pop();
-      localStorage.setItem(LOGIN_HISTORY_KEY, JSON.stringify(h));
-    }
-    function renderQuickLogin() {
-      const area = document.getElementById('quickLoginArea'); if(!area) return;
-      const history = getLoginHistory(); if(!history.length) { area.innerHTML=''; return; }
-      let html = '<p style="font-size:13px;color:#aaa;margin-top:8px;">快捷登录</p>';
-      history.forEach(h => html += `<div class="quick-login-item" data-uid="${h.uid}"><span>👤 ${escapeHtml(h.username)}</span><span style="font-size:11px;color:#888;">UID:${h.uid}</span></div>`);
-      area.innerHTML = html;
-      area.querySelectorAll('.quick-login-item').forEach(el => el.addEventListener('click', function() {
-        const uid = this.dataset.uid;
-        if(allUsers[uid]) { currentUser = allUsers[uid]; addLoginHistory(currentUser.username, currentUser.uid); showMain(); }
-        else { showToast('用户数据不存在'); let h = getLoginHistory().filter(i => i.uid!==uid); localStorage.setItem(LOGIN_HISTORY_KEY, JSON.stringify(h)); renderQuickLogin(); }
-      }));
-    }
-
-    function cleanOldImages() {
-      const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth()-3); const cutoffStr = formatDate(cutoff);
-      for(const uid in allUsers) {
-        const u = allUsers[uid]; const keys = Object.keys(u).filter(k => k.startsWith('physique_'));
-        keys.filter(k => k.replace('physique_','') < cutoffStr).slice(0, -5).forEach(k => { delete u[k]; deleteImageFromDB(uid+'_'+k).catch(()=>{}); });
-      }
-    }
-
-    // IndexedDB 图片
-    function openImgDB() {
-      return new Promise((resolve, reject) => {
-        if(imgDB) return resolve(imgDB);
-        const req = indexedDB.open('SoloLevelingImagesV3', 1);
-        req.onupgradeneeded = e => { const db = e.target.result; if(!db.objectStoreNames.contains('imgs')) db.createObjectStore('imgs',{keyPath:'id'}); };
-        req.onsuccess = e => { imgDB = e.target.result; resolve(imgDB); };
-        req.onerror = reject;
-      });
-    }
-    async function saveImageToDB(key, arr) {
-      try { const db = await openImgDB(); const tx = db.transaction('imgs','readwrite'); tx.objectStore('imgs').put({id:key, images:arr}); return new Promise(r => { tx.oncomplete = r; }); } catch(e) {}
-    }
-    async function loadImageFromDB(key) {
-      try { const db = await openImgDB(); const tx = db.transaction('imgs','readonly'); const req = tx.objectStore('imgs').get(key); return new Promise(resolve => { req.onsuccess = () => resolve(req.result?.images||null); req.onerror = () => resolve(null); }); } catch(e) { return null; }
-    }
-    async function deleteImageFromDB(key) {
-      try { const db = await openImgDB(); const tx = db.transaction('imgs','readwrite'); tx.objectStore('imgs').delete(key); return new Promise(r => { tx.oncomplete = r; }); } catch(e) {}
-    }
-    async function getUserImages(user, key) { const db = await loadImageFromDB(user.uid+'_'+key); return db || user[key] || []; }
-    async function setUserImages(user, key, arr) { user[key] = arr; await saveImageToDB(user.uid+'_'+key, arr); }
-    async function deleteUserImages(user, key) { delete user[key]; await deleteImageFromDB(user.uid+'_'+key); }
-
-    loadAllUsers(); openImgDB().catch(()=>{}); renderQuickLogin();
-
-    let currentUser = null, pendingXlsxRecords = [], weightPeriod = 'all', currentFriendUid = null;
-
-    function save() { saveAllUsers(); }
-    function generateUID() { let uid; do { uid = Math.floor(100000+Math.random()*900000).toString(); } while(allUsers[uid]); return uid; }
-
-    const exerciseLibrary = {
-      '胸部': ['平板卧推','上斜卧推','下斜卧推','哑铃飞鸟','上斜哑铃飞鸟','双杠臂屈伸','绳索夹胸','蝴蝶机夹胸','俯卧撑','器械推胸'],
-      '背部': ['引体向上','杠铃划船','哑铃划船','高位下拉','坐姿划船','T杆划船','直臂下压','山羊挺身','硬拉'],
-      '腿部': ['深蹲','硬拉','腿举','腿弯举','负重提踵','保加利亚分腿蹲','箭步蹲','哈克深蹲','臀桥','腿屈伸'],
-      '肩部': ['哑铃推举','侧平举','前平举','面拉','阿诺德推举','杠铃推举','俯身飞鸟','绳索侧平举'],
-      '手臂': ['杠铃弯举','锤式弯举','三头下压','窄距卧推','集中弯举','牧师椅弯举','绳索锤式弯举','双杠臂屈伸（臂）','仰卧臂屈伸']
-    };
-
-    function getMonday(d) { const p=d.split('-'); const dt=new Date(p[0],p[1]-1,p[2]); dt.setDate(dt.getDate()-(dt.getDay()===0?6:1-dt.getDay())); return formatDate(dt); }
-    function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-    function addWeek(m,w) { const p=m.split('-'); const d=new Date(p[0],p[1]-1,p[2]); d.setDate(d.getDate()+w*7); return formatDate(d); }
-    function getMonthOffset(d,o) { const [y,m,day]=d.split('-').map(Number); const dt=new Date(y,m-1,day); dt.setMonth(dt.getMonth()+o); return formatDate(dt); }
-    function parseDateToISO(s) { if(!s) return null; let d=new Date(s); if(!isNaN(d.getTime())) return formatDate(d); const p=String(s).split(/[-/]/); if(p.length===3){ const y=+p[0],m=+p[1],day=+p[2]; if(y>1900&&m>=1&&m<=12&&day>=1&&day<=31) return `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`; } return null; }
-    function escapeHtml(t) { return String(t).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
-
-    function utf8ToBase64(str) { const bytes = new TextEncoder().encode(str); const binString = Array.from(bytes, byte => String.fromCodePoint(byte)).join(''); return btoa(binString); }
-    function base64ToUtf8(b64) { const binString = atob(b64); const bytes = Uint8Array.from(binString, m => m.codePointAt(0)); return new TextDecoder().decode(bytes); }
-
-    function showAuthMsg(msg, err=true) { const el=document.getElementById('authMsg'); if(!el) return; el.textContent=msg; el.style.color=err?'#ff6b6b':'#2ecc71'; setTimeout(()=>el.textContent='',3000); }
-
-    function showMain() {
-      document.getElementById('auth-screen').classList.add('hidden');
-      document.getElementById('main-screen').classList.remove('hidden');
-      document.getElementById('myUid').textContent = currentUser.uid;
-      document.getElementById('myName').textContent = currentUser.username;
-      switchPanel('weight');
-    }
-
-    function switchPanel(name) {
-      ['weight','strength','onerm','physique','friends'].forEach(id => document.getElementById(id+'-panel').classList.add('hidden'));
-      document.getElementById(name+'-panel').classList.remove('hidden');
-      document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-      document.querySelector(`.nav button[data-panel="${name}"]`)?.classList.add('active');
-      if(name==='weight') renderWeightPanel();
-      if(name==='strength') renderStrengthWeek();
-      if(name==='physique') renderPhysiquePanel();
-      if(name==='onerm') { document.getElementById('prMuscleGroup').value=''; document.getElementById('prExercise').classList.add('hidden'); document.getElementById('addPrExerciseBtn').classList.add('hidden'); }
-      if(name==='friends') renderFriendList();
-    }
-
-    // 体重面板
-    document.getElementById('manualDateToggle').addEventListener('click', function(){ this.classList.toggle('active'); const c=this.nextElementSibling; c.style.display=c.style.display==='block'?'none':'block'; });
-    document.getElementById('quickRecordBtn').addEventListener('click', ()=>{
-      if(!currentUser) return; const w=parseFloat(document.getElementById('quickWeight').value); if(isNaN(w)||w<20||w>300) return showToast('请输入合理体重');
-      const phase=document.getElementById('quickPhase').value, today=formatDate(new Date());
-      const idx=currentUser.weightRecords.findIndex(r=>r.date===today);
-      if(idx!==-1) currentUser.weightRecords[idx]={date:today,weight:w,phase}; else currentUser.weightRecords.push({date:today,weight:w,phase});
-      currentUser.weightRecords.sort((a,b)=>a.date.localeCompare(b.date)); save(); document.getElementById('quickWeight').value=''; renderWeightPanel(); showToast('✅ 已记录');
-    });
-    document.getElementById('addWeightBtn').addEventListener('click', ()=>{
-      if(!currentUser) return; const d=document.getElementById('weightDate').value, w=parseFloat(document.getElementById('weightValue').value);
-      if(!d||isNaN(w)) return showToast('请填写日期体重'); const phase=document.getElementById('weightPhaseSelect').value;
-      const idx=currentUser.weightRecords.findIndex(r=>r.date===d);
-      if(idx!==-1) currentUser.weightRecords[idx]={date:d,weight:w,phase}; else currentUser.weightRecords.push({date:d,weight:w,phase});
-      currentUser.weightRecords.sort((a,b)=>a.date.localeCompare(b.date)); save(); renderWeightPanel(); showToast('✅ 已添加');
-    });
-    document.getElementById('periodDropdown').addEventListener('change', function(){ weightPeriod=this.value; renderWeightPanel(); });
-    function getFilteredByPeriod(p) {
-      if(!currentUser) return []; const recs=[...currentUser.weightRecords].sort((a,b)=>a.date.localeCompare(b.date)); if(p==='all') return recs;
-      const now=new Date(), today=formatDate(now); let s,e;
-      switch(p){
-        case'7d':s=formatDate(new Date(Date.now()-7*864e5));e=today;break; case'14d':s=formatDate(new Date(Date.now()-14*864e5));e=today;break;
-        case'30d':s=formatDate(new Date(Date.now()-30*864e5));e=today;break; case'60d':s=formatDate(new Date(Date.now()-60*864e5));e=today;break;
-        case'90d':s=formatDate(new Date(Date.now()-90*864e5));e=today;break;
-        case'this_month':s=formatDate(new Date(now.getFullYear(),now.getMonth(),1));e=today;break;
-        case'last_month':{const f=new Date(now.getFullYear(),now.getMonth()-1,1),l=new Date(now.getFullYear(),now.getMonth(),0);return recs.filter(r=>r.date>=formatDate(f)&&r.date<=formatDate(l));}
-        case'this_year':s=formatDate(new Date(now.getFullYear(),0,1));e=today;break;
-        case'last_year':{const y=now.getFullYear()-1;return recs.filter(r=>r.date>=formatDate(new Date(y,0,1))&&r.date<=formatDate(new Date(y,11,31)));}
-        default:return recs;
-      }
-      return recs.filter(r=>r.date>=s&&r.date<=e);
-    }
-    function renderWeightPanel() { const recs=getFilteredByPeriod(weightPeriod); drawWeightChart(recs); updateSuggestion(recs); }
-    function drawWeightChart(recs) {
-      const c=document.getElementById('weightChartDiv'); if(!c) return;
-      if(!recs.length){ c.innerHTML='<div style="text-align:center;padding:40px;color:#aaa;">暂无体重数据</div>'; return; }
-      const trace={x:recs.map(r=>r.date),y:recs.map(r=>r.weight),type:'scatter',mode:'lines+markers',marker:{color:recs.map(r=>r.phase==='bulk'?'#27ae60':'#e74c3c'),size:8},line:{color:'#ff6b6b',width:2.5}};
-      Plotly.newPlot(c,[trace],{title:document.getElementById('periodDropdown').selectedOptions[0]?.text||'全部',paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(31,43,77,0.6)',font:{color:'#ccc'},xaxis:{tickformat:'%m-%d'},yaxis:{title:'kg'},margin:{l:45,r:15,t:40,b:50}},{displayModeBar:false,responsive:true});
-    }
-    function updateSuggestion(recs) {
-      const el=document.getElementById('weightSuggestion'); if(!el) return;
-      if(recs.length<2){ el.textContent='至少2条数据'; return; }
-      const f=recs[0],l=recs[recs.length-1]; const ch=l.weight-f.weight; const days=Math.max(1,Math.round((new Date(l.date)-new Date(f.date))/864e5)); const wk=(ch/(days/7)).toFixed(2);
-      el.textContent=`📊 ${recs.length}条 | 趋势${ch>0?'+':''}${ch.toFixed(1)}kg | 周均${wk>0?'+':''}${wk}kg`;
-    }
-    // Excel
-    document.getElementById('downloadTemplateBtn').addEventListener('click', ()=>{ if(typeof XLSX==='undefined') return showToast('加载中'); const ws=XLSX.utils.aoa_to_sheet([['日期','体重','增肌期/减脂期'],['2025-01-01',70,'增肌期']]); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'体重'); XLSX.writeFile(wb,'体重模板.xlsx'); });
-    document.getElementById('xlsxUpload').addEventListener('change', function(e){
-      const file=e.target.files[0]; if(!file) return; if(typeof XLSX==='undefined') return showToast('加载中');
-      const reader=new FileReader(); reader.onload=ev=>{
-        try{
-          const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:false});
-          if(rows.length<2) return showToast('至少两行'); const h=rows[0].map(x=>String(x).trim()); const di=h.indexOf('日期'),wi=h.indexOf('体重'); if(di===-1||wi===-1) return showToast('表头需日期体重');
-          pendingXlsxRecords=[]; for(let i=1;i<rows.length;i++){ const r=rows[i]; let date=parseDateToISO(r[di]); if(!date) continue; const w=parseFloat(r[wi]); if(isNaN(w)) continue; const ph=String(r[h.indexOf('增肌期/减脂期')]||'').trim(); pendingXlsxRecords.push({date,weight:w,phase:ph==='增肌期'?'bulk':'cut'}); }
-          document.getElementById('mapXlsxBtn').disabled=false; showToast(`读取${pendingXlsxRecords.length}条`);
-        }catch(err){ showToast('解析失败'); }
-      }; reader.readAsArrayBuffer(file); e.target.value='';
-    });
-    document.getElementById('mapXlsxBtn').addEventListener('click', ()=>{
-      if(!currentUser||!pendingXlsxRecords.length) return; if(!confirm('将替换全部体重记录？')) return;
-      currentUser.weightRecords=pendingXlsxRecords; currentUser.weightRecords.sort((a,b)=>a.date.localeCompare(b.date)); save(); pendingXlsxRecords=[]; document.getElementById('mapXlsxBtn').disabled=true; weightPeriod='all'; document.getElementById('periodDropdown').value='all'; renderWeightPanel(); showToast('已替换');
-    });
-
-    // 本周统计
-    function generateReportContent() {
-      if (!currentUser) return '<p>请先登录</p>';
-      const today = formatDate(new Date()); const thisMonday = getMonday(today); const lastMonday = addWeek(thisMonday, -1);
-      const thisPlan = currentUser.weeklyPlans[thisMonday] || { days:{}, weekType:null };
-      const thisWeekType = thisPlan.weekType;
-      let compareMonday = lastMonday;
-      if (thisWeekType) {
-        const allMondays = Object.keys(currentUser.weeklyPlans).filter(d=>d<thisMonday).sort((a,b)=>b.localeCompare(a));
-        for (let d of allMondays) { if (currentUser.weeklyPlans[d].weekType===thisWeekType) { compareMonday = d; break; } }
-      }
-      const comparePlan = currentUser.weeklyPlans[compareMonday] || { days:{} };
-      function aggregate(plan) {
-        const res={}; for(let i=0;i<7;i++){ const day=plan.days[i]||{muscles:[]}; if(!day.muscles) continue;
-          day.muscles.forEach(m=>{ if(!m.muscleGroup||m.muscleGroup==='休息') return; if(!res[m.muscleGroup]) res[m.muscleGroup]={};
-            (m.exercises||[]).forEach(e=>{ if(!res[m.muscleGroup][e.name]) res[m.muscleGroup][e.name]={sets:0,totalWeight:0}; res[m.muscleGroup][e.name].sets+=e.sets; res[m.muscleGroup][e.name].totalWeight+=e.weight*e.sets; }); }); } return res;
-      }
-      const thisData = aggregate(thisPlan), compareData = aggregate(comparePlan);
-      let html = '<h3>📊 本周详细周报</h3>';
-      const thisWeekW = currentUser.weightRecords.filter(r=>r.date>=thisMonday), lastWeekW = currentUser.weightRecords.filter(r=>r.date>=lastMonday&&r.date<thisMonday);
-      const avgThis = thisWeekW.length ? (thisWeekW.reduce((s,r)=>s+r.weight,0)/thisWeekW.length).toFixed(1) : null;
-      const avgLast = lastWeekW.length ? (lastWeekW.reduce((s,r)=>s+r.weight,0)/lastWeekW.length).toFixed(1) : null;
-      html += `<p>体重：本周平均 <b>${avgThis||'-'} kg</b>`; if(avgLast) html += `，上周 ${avgLast} kg`; html+='</p><h4>💪 训练对比</h4>';
-      const allMuscles = new Set([...Object.keys(thisData),...Object.keys(compareData)]);
-      if(allMuscles.size===0){ html+='<p>本周无训练记录</p>'; } else {
-        html+='<table class="stats-table"><tr><th>肌群</th><th>动作</th><th>组数</th><th>均重</th><th>组变</th><th>重变</th></tr>';
-        allMuscles.forEach(mg=>{
-          const thisM=thisData[mg]||{}, compM=compareData[mg]||{}; const exs=new Set([...Object.keys(thisM),...Object.keys(compM)]);
-          html+=`<tr class="muscle-group-header"><td colspan="6">${escapeHtml(mg)}</td></tr>`;
-          exs.forEach(ex=>{
-            const cur=thisM[ex]||{sets:0,totalWeight:0}, prev=compM[ex]||{sets:0,totalWeight:0};
-            const curAvg=cur.sets?(cur.totalWeight/cur.sets).toFixed(1):'0', prevAvg=prev.sets?(prev.totalWeight/prev.sets).toFixed(1):'0';
-            let setChange='-', weightChange='-';
-            if(prev.sets>0){ const sp=((cur.sets-prev.sets)/prev.sets*100).toFixed(0); setChange=(sp>0?'+':'')+sp+'%'; const wp=((parseFloat(curAvg)-parseFloat(prevAvg))/parseFloat(prevAvg)*100).toFixed(0); weightChange=(wp>0?'+':'')+wp+'%'; }
-            else if(cur.sets>0){ setChange='新'; weightChange='新'; }
-            html+=`<tr><td></td><td>${escapeHtml(ex)}</td><td>${cur.sets}</td><td>${curAvg}</td><td>${setChange}</td><td>${weightChange}</td></tr>`;
+    MENU_DB = [...MENU_DB, ...PROTEIN_MENUS, ...VITAMIN_MENUS];
+    function ensureCategoryCount() {
+      const categories = ['carb', 'protein', 'vitamin'];
+      categories.forEach(cat => {
+        const existing = MENU_DB.filter(m => m.type === cat);
+        if (existing.length >= 60) return;
+        const need = 60 - existing.length;
+        for (let i = 0; i < need; i++) {
+          const base = existing[i % existing.length];
+          MENU_DB.push({
+            name: '轻享·' + base.name,
+            emoji: base.emoji,
+            type: cat,
+            recipe: { ...base.recipe }
           });
-        });
-        html+='</table>';
-      }
-      html+=`<p style="margin-top:8px;">对比基准：${thisWeekType==='strength'?'增力周':thisWeekType==='volume'?'容量周':'上周'} (${compareMonday})</p>`;
-      return html;
-    }
-    function showWeeklyReport() { showModal(generateReportContent()); }
-    document.getElementById('weeklyReportBtn').addEventListener('click', showWeeklyReport);
-    document.getElementById('refreshReportBtn').addEventListener('click', ()=> showToast('数据已刷新'));
-
-    function showModal(content) {
-      const modal = document.createElement('div'); modal.className='modal';
-      modal.innerHTML = `<div class="modal-content">${content}<button class="small secondary" style="margin-top:10px;width:100%;min-height:44px;">✕ 关闭</button></div>`;
-      document.body.appendChild(modal);
-      const close=()=>modal.remove(); modal.addEventListener('click',e=>{if(e.target===modal)close();});
-      modal.querySelector('.modal-content button').addEventListener('click',close);
-    }
-
-    // 力量面板（优化布局，无完成添加）
-    let currentStrengthMonday = getMonday(formatDate(new Date()));
-    function setStrengthMonday(d){ currentStrengthMonday=d; renderStrengthWeek(); }
-    document.getElementById('prevWeekBtn').addEventListener('click', ()=>setStrengthMonday(addWeek(currentStrengthMonday,-1)));
-    document.getElementById('nextWeekBtn').addEventListener('click', ()=>setStrengthMonday(addWeek(currentStrengthMonday,1)));
-    document.getElementById('todayStrengthBtn').addEventListener('click', ()=>setStrengthMonday(getMonday(formatDate(new Date()))));
-    function getPlan(m){ if(!currentUser.weeklyPlans[m]) currentUser.weeklyPlans[m]={days:{},weekType:null}; return currentUser.weeklyPlans[m]; }
-    function updateWeekTypeButtons(){ const p=getPlan(currentStrengthMonday); document.getElementById('strengthWeekBtn').classList.toggle('active',p.weekType==='strength'); document.getElementById('volumeWeekBtn').classList.toggle('active',p.weekType==='volume'); }
-    document.getElementById('strengthWeekBtn').addEventListener('click', ()=>{ const p=getPlan(currentStrengthMonday); p.weekType=p.weekType==='strength'?null:'strength'; save(); updateWeekTypeButtons(); showToast(p.weekType==='strength'?'🔥 增力周':'取消标记'); });
-    document.getElementById('volumeWeekBtn').addEventListener('click', ()=>{ const p=getPlan(currentStrengthMonday); p.weekType=p.weekType==='volume'?null:'volume'; save(); updateWeekTypeButtons(); showToast(p.weekType==='volume'?'💧 容量周':'取消标记'); });
-
-    function renderStrengthWeek(){
-      document.getElementById('currentWeekLabel').textContent=currentStrengthMonday+' 周'; updateWeekTypeButtons();
-      const plan=getPlan(currentStrengthMonday), grid=document.getElementById('weekGrid'); grid.innerHTML='';
-      const today=formatDate(new Date()), days=['一','二','三','四','五','六','日'];
-      for(let i=0;i<7;i++){ const d=new Date(currentStrengthMonday+'T00:00:00'); d.setDate(d.getDate()+i); const ds=formatDate(d); const dd=plan.days[i]||{muscles:[]}; const names=(dd.muscles||[]).length>0?dd.muscles.map(m=>m.muscleGroup).filter(Boolean).join(',')||'休息':'休息'; const cell=document.createElement('div'); cell.className='day-cell'; if(ds===today) cell.classList.add('today'); cell.innerHTML=`<strong>周${days[i]}</strong><br><span style="font-size:9px;">${ds.slice(5)}</span><br><span style="font-size:10px;">${names}</span>`; cell.addEventListener('click',()=>showDayDetail(i)); grid.appendChild(cell); }
-    }
-
-    function showDayDetail(dayIdx){
-      const plan=getPlan(currentStrengthMonday); if(!plan.days[dayIdx]) plan.days[dayIdx]={muscles:[]}; const day=plan.days[dayIdx]; if(!day.muscles) day.muscles=[];
-      const container=document.getElementById('dayDetail');
-      let html=`<h4>${['周一','周二','周三','周四','周五','周六','周日'][dayIdx]}</h4>
-        <div style="display:flex;gap:6px;margin-bottom:8px;">
-          <button id="addMuscleBtn" class="small secondary" style="flex:1;">+ 添加肌群</button>
-          <button id="restDayBtn" class="small secondary" style="flex:1;">🛌 休息日</button>
-        </div>`;
-      day.muscles.forEach((m,i) => html += renderMuscleBlock(m,i));
-      container.innerHTML = html;
-      container.scrollIntoView({behavior:'smooth',block:'nearest'});
-      document.getElementById('addMuscleBtn').addEventListener('click', ()=>{ day.muscles.push({muscleGroup:'',exercises:[]}); save(); renderStrengthWeek(); showDayDetail(dayIdx); });
-      document.getElementById('restDayBtn').addEventListener('click', ()=>{ day.muscles=[]; save(); renderStrengthWeek(); showDayDetail(dayIdx); showToast('休息日'); });
-      document.querySelectorAll('.remove-muscle-btn').forEach(b=>b.addEventListener('click',function(){ const i=+this.dataset.midx; day.muscles.splice(i,1); save(); renderStrengthWeek(); showDayDetail(dayIdx); }));
-      day.muscles.forEach((m,i)=>{
-        const sel=document.getElementById(`groupSel-${i}`); if(sel){ sel.value=m.muscleGroup||''; sel.addEventListener('change',function(){ m.muscleGroup=this.value; save(); renderStrengthWeek(); showDayDetail(dayIdx); }); }
-        const area=document.getElementById(`exArea-${i}`); if(area) renderExerciseArea(area, m, i);
-      });
-    }
-
-    function renderMuscleBlock(muscle, idx){
-      return `<div class="muscle-block" id="muscle-${idx}">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <select id="groupSel-${idx}" style="flex:1;margin:0;"><option value="">选择肌群</option><option value="胸部">胸部</option><option value="背部">背部</option><option value="腿部">腿部</option><option value="肩部">肩部</option><option value="手臂">手臂</option></select>
-          <button class="small toggle-ex-list-btn" data-target="exArea-${idx}" style="min-height:30px;width:30px;">▼</button>
-          <button class="small remove-muscle-btn delete-muscle-btn" data-midx="${idx}" style="margin:0;">删除</button>
-        </div>
-        <div id="exArea-${idx}" class="exercise-area"></div>
-      </div>`;
-    }
-
-    function renderExerciseArea(container, muscle, mIdx){
-      let html = '';
-      if(muscle.muscleGroup && muscle.muscleGroup!=='休息'){
-        const base = exerciseLibrary[muscle.muscleGroup]||[];
-        const custom = (currentUser.customExercises&&currentUser.customExercises[muscle.muscleGroup])?currentUser.customExercises[muscle.muscleGroup]:[];
-        const all = [...new Set([...base,...custom])];
-        html += `<div class="ex-list-container" id="exList-${mIdx}"><table class="ex-table"><thead><tr><th>动作</th><th>重量</th><th>次数</th><th>组数</th><th></th></tr></thead><tbody>`;
-        (muscle.exercises||[]).forEach((e,ei)=> html += `<tr><td>${escapeHtml(e.name)}</td><td>${e.weight}</td><td>${e.reps}</td><td>${e.sets}</td><td style="display:flex;gap:2px;"><button class="small modEx" data-midx="${mIdx}" data-eidx="${ei}" style="font-size:10px;">改</button><button class="small delEx" data-midx="${mIdx}" data-eidx="${ei}" style="font-size:10px;">删</button></td></tr>`);
-        html += `</tbody></table></div>`;
-        html += `<button class="small show-add-btn" id="showAdd-${mIdx}">+ 新增动作</button>`;
-        html += `<div id="inputArea-${mIdx}" style="display:none; margin-top:6px;">
-          <div style="display:flex;gap:4px;"><select id="exSel-${mIdx}" style="flex:1;font-size:12px;"><option value="">选择动作</option>${all.map(e=>'<option>'+e+'</option>').join('')}</select><button class="small add-custom-btn" data-midx="${mIdx}">+</button></div>
-          <div style="display:flex;gap:3px;margin:4px 0;"><input id="wt-${mIdx}" placeholder="重量" type="number" step="0.5" style="flex:1;"><input id="rep-${mIdx}" placeholder="次数" type="number" style="flex:1;"><input id="set-${mIdx}" placeholder="组数" type="number" style="flex:1;"></div>
-          <button class="small add-ex-btn" data-midx="${mIdx}" style="margin-top:4px;">添加动作</button>
-        </div>`;
-      }
-      container.innerHTML = html;
-      if(!muscle.muscleGroup||muscle.muscleGroup==='休息') return;
-
-      const toggleBtn = document.querySelector(`.toggle-ex-list-btn[data-target="exArea-${mIdx}"]`);
-      const exList = document.getElementById(`exList-${mIdx}`);
-      if(toggleBtn && exList) {
-        toggleBtn.addEventListener('click', ()=>{
-          const isHidden = exList.style.display === 'none';
-          exList.style.display = isHidden ? '' : 'none';
-          toggleBtn.textContent = isHidden ? '▼' : '▶';
-        });
-      }
-
-      const showAdd = document.getElementById(`showAdd-${mIdx}`);
-      const inputArea = document.getElementById(`inputArea-${mIdx}`);
-      if(showAdd && inputArea) {
-        showAdd.addEventListener('click', function(e){
-          e.stopPropagation();
-          const isVisible = inputArea.style.display === 'block';
-          if (isVisible) {
-            inputArea.style.display = 'none';
-            showAdd.textContent = '+ 新增动作';
-          } else {
-            inputArea.style.display = 'block';
-            showAdd.textContent = '取消添加';
-          }
-        });
-      }
-
-      document.querySelector(`.add-custom-btn[data-midx="${mIdx}"]`)?.addEventListener('click', ()=>{
-        const n = prompt('新动作名称：'); if(n?.trim()){
-          if(!currentUser.customExercises) currentUser.customExercises={};
-          if(!currentUser.customExercises[muscle.muscleGroup]) currentUser.customExercises[muscle.muscleGroup]=[];
-          if(!currentUser.customExercises[muscle.muscleGroup].includes(n.trim())){ currentUser.customExercises[muscle.muscleGroup].push(n.trim()); save(); renderExerciseArea(container,muscle,mIdx); }
         }
       });
-      document.querySelector(`.add-ex-btn[data-midx="${mIdx}"]`)?.addEventListener('click', ()=>{
-        const s=document.getElementById(`exSel-${mIdx}`), w=document.getElementById(`wt-${mIdx}`), r=document.getElementById(`rep-${mIdx}`), st=document.getElementById(`set-${mIdx}`);
-        if(!s||!w||!r||!st) return; const name=s.value, weight=parseFloat(w.value), reps=parseInt(r.value), sets=parseInt(st.value);
-        if(!name||isNaN(weight)||isNaN(reps)||isNaN(sets)) return showToast('完整填写');
-        if(!muscle.exercises) muscle.exercises=[];
-        muscle.exercises.push({name,weight,reps,sets}); save();
-        if(inputArea) inputArea.style.display = 'none';
-        if(showAdd) showAdd.textContent = '+ 新增动作';
-        renderExerciseArea(container,muscle,mIdx);
+    }
+    ensureCategoryCount();
+
+    function classifyDish(name) {
+      const n = name.toLowerCase();
+      if (/米|面|粉|薯|芋|麦|豆粥|饭|饼|馒头|面包|吐司|玉米|小米|糙米|燕麦|荞麦|薏米|魔芋|山药|土豆|南瓜|红薯|紫薯/.test(n)) return 'carb';
+      if (/鸡|鸭|鱼|虾|蟹|贝|牛|猪|羊|蛋|豆腐|豆干|腐竹|肉|肝|腰|肠|丸/.test(n)) return 'protein';
+      return 'vitamin';
+    }
+
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const wheelContainer = document.getElementById('wheelContainer');
+    const spinBtn = document.getElementById('spinBtn');
+    const resultTag = document.getElementById('resultTag');
+    const centerEmoji = document.getElementById('centerEmoji');
+    const centerHint = document.getElementById('centerHint');
+    const centerDisplay = document.getElementById('centerDisplay');
+    const recipeCard = document.getElementById('recipeCard');
+    const recipeName = document.getElementById('recipeName');
+    const recipeIngredients = document.getElementById('recipeIngredients');
+    const recipeSeasonings = document.getElementById('recipeSeasonings');
+    const recipeSteps = document.getElementById('recipeSteps');
+    const moduleBtns = document.querySelectorAll('.module-btn');
+    const countBtns = document.querySelectorAll('.count-btn');
+    const countSelector = document.getElementById('countSelector');
+    const moduleSelector = document.getElementById('moduleSelector');
+    const addDishBtn = document.getElementById('addDishBtn');
+    const newDishName = document.getElementById('newDishName');
+
+    let currentModule = 'all';
+    let currentCount = 5;
+    let currentMenus = [];
+    let rotationAngle = 0;
+    let isSpinning = false;
+    let animationId = null;
+
+    function filterMenusByModule(module) {
+      if (module === 'all') return [...MENU_DB];
+      return MENU_DB.filter(m => m.type === module);
+    }
+
+    function pickRandomMenus(pool, count) {
+      if (pool.length === 0) return [];
+      const shuffled = [...pool].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, Math.min(count, pool.length));
+    }
+
+    function refreshMenus() {
+      const pool = filterMenusByModule(currentModule);
+      currentMenus = pickRandomMenus(pool, currentCount);
+      if (currentMenus.length < currentCount) {
+        currentCount = currentMenus.length;
+        updateCountButtonActive(currentCount);
+      }
+    }
+
+    function updateCountButtonActive(count) {
+      countBtns.forEach(btn => {
+        const val = parseInt(btn.dataset.count);
+        btn.classList.toggle('active', val === count);
       });
-      document.querySelectorAll(`.modEx[data-midx="${mIdx}"]`).forEach(b=>b.addEventListener('click',function(){
-        const ei=+this.dataset.eidx; const ex=muscle.exercises[ei]; const nw=prompt('新重量',ex.weight), nr=prompt('新次数',ex.reps), ns=prompt('新组数',ex.sets);
-        if(nw&&!isNaN(+nw)&&nr&&!isNaN(+nr)&&ns&&!isNaN(+ns)){ ex.weight=+nw; ex.reps=+nr; ex.sets=+ns; save(); renderExerciseArea(container,muscle,mIdx); }
-      }));
-      document.querySelectorAll(`.delEx[data-midx="${mIdx}"]`).forEach(b=>b.addEventListener('click',function(){
-        const ei=+this.dataset.eidx; muscle.exercises.splice(ei,1); save(); renderExerciseArea(container,muscle,mIdx);
-      }));
     }
 
-    // 1PR
-    const formulas={epley:(w,r)=>w*(1+r/30),brzycki:(w,r)=>w*(36/(37-r)),lombardi:(w,r)=>w*Math.pow(r,0.1),mayhew:(w,r)=>100*w/(101.3-2.67123*r),lander:(w,r)=>100*w/(101.3-2.67123*r)};
-    document.getElementById('prMuscleGroup').addEventListener('change',function(){const mg=this.value;const s=document.getElementById('prExercise'),a=document.getElementById('addPrExerciseBtn');if(!mg){s.classList.add('hidden');a.classList.add('hidden');return;}s.classList.remove('hidden');a.classList.remove('hidden');updatePrList(mg);});
-    function updatePrList(mg){const s=document.getElementById('prExercise');const base=exerciseLibrary[mg]||[],cust=(currentUser.customExercises&&currentUser.customExercises[mg])?currentUser.customExercises[mg]:[];s.innerHTML='<option value="">选择动作</option>'+[...new Set([...base,...cust])].map(e=>'<option>'+e+'</option>').join('');}
-    document.getElementById('addPrExerciseBtn').addEventListener('click',()=>{const mg=document.getElementById('prMuscleGroup').value;if(!mg)return;const n=prompt('新动作：');if(n?.trim()){if(!currentUser.customExercises)currentUser.customExercises={};if(!currentUser.customExercises[mg])currentUser.customExercises[mg]=[];if(!currentUser.customExercises[mg].includes(n.trim())){currentUser.customExercises[mg].push(n.trim());save();updatePrList(mg);}}});
-    document.getElementById('calc1RM').addEventListener('click',()=>{const w=parseFloat(document.getElementById('weightInput').value),r=parseInt(document.getElementById('repsInput').value);if(isNaN(w)||isNaN(r)||r<1)return showToast('有效值');const rm=formulas[document.getElementById('prFormula').value](w,r).toFixed(1);document.getElementById('rmResult').textContent='💥 '+rm+' kg';});
+    function drawWheel(rotation = rotationAngle) {
+      const size = Math.min(canvas.width, canvas.height);
+      const cx = size / 2;
+      const cy = size / 2;
+      const outerR = size * 0.43;
+      const innerR = size * 0.16;
+      const count = currentMenus.length;
+      if (count === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+      const sectorAngle = (2 * Math.PI) / count;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < count; i++) {
+        const start = rotation + i * sectorAngle;
+        const end = start + sectorAngle;
+        const mid = start + sectorAngle / 2;
+        const hue = (i * 47 + 180) % 360;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(cx + innerR * Math.cos(start), cy + innerR * Math.sin(start));
+        ctx.lineTo(cx + outerR * Math.cos(start), cy + outerR * Math.sin(start));
+        ctx.arc(cx, cy, outerR, start, end);
+        ctx.lineTo(cx + innerR * Math.cos(end), cy + innerR * Math.sin(end));
+        ctx.arc(cx, cy, innerR, end, start, true);
+        ctx.closePath();
+        const grad = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
+        grad.addColorStop(0, `hsl(${hue}, 40%, 78%)`);
+        grad.addColorStop(1, `hsl(${hue}, 35%, 65%)`);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.strokeStyle = `hsl(${hue}, 30%, 55%)`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
 
-    // 形体面板
-    let currentPhysiqueMonday = getMonday(formatDate(new Date()));
-    function setPhysiqueMonday(d){ currentPhysiqueMonday=d; renderPhysiquePanel(); }
-    document.getElementById('physiquePrevWeek').addEventListener('click',()=>setPhysiqueMonday(addWeek(currentPhysiqueMonday,-1)));
-    document.getElementById('physiqueNextWeek').addEventListener('click',()=>setPhysiqueMonday(addWeek(currentPhysiqueMonday,1)));
-    document.getElementById('todayPhysiqueBtn').addEventListener('click',()=>setPhysiqueMonday(getMonday(formatDate(new Date()))));
-    async function renderPhysiquePanel(){
-      document.getElementById('physiqueWeekLabel').textContent=currentPhysiqueMonday+' 周'; const grid=document.getElementById('physiqueWeekGrid'); grid.innerHTML='';
-      const today=formatDate(new Date()), days=['一','二','三','四','五','六','日'];
-      for(let i=0;i<7;i++){ const d=new Date(currentPhysiqueMonday+'T00:00:00'); d.setDate(d.getDate()+i); const ds=formatDate(d); const key='physique_'+ds; const imgs=await getUserImages(currentUser,key); const lm=getMonthOffset(ds,-1), t3=getMonthOffset(ds,-3); const lmgs=await getUserImages(currentUser,'physique_'+lm), t3gs=await getUserImages(currentUser,'physique_'+t3); const cell=document.createElement('div'); cell.className='day-cell'; if(ds===today) cell.classList.add('today'); let h=`<strong>周${days[i]}</strong><br><span style="font-size:8px;">${ds.slice(5)}</span><br>`; if(imgs.length) h+=`<img src="${imgs[0]}" class="img-thumb-small" style="width:24px;"> `; else h+='<span style="color:#555;">-</span> '; h+=`<button class="small" style="padding:1px 4px;font-size:8px;">📷</button><br><div class="physique-row"><span class="physique-label">上月</span>`; if(lmgs.length) h+=`<img src="${lmgs[0]}" class="img-thumb-small" data-date="${lm}">`; else h+='<span style="color:#555;">无</span>'; h+=`</div><div class="physique-row"><span class="physique-label">3月</span>`; if(t3gs.length) h+=`<img src="${t3gs[0]}" class="img-thumb-small" data-date="${t3}">`; else h+='<span style="color:#555;">无</span>'; h+=`</div>`; cell.innerHTML=h; cell.querySelector('button').addEventListener('click',e=>{e.stopPropagation();document.getElementById('physiqueTargetDate').value=ds;document.getElementById('physiqueImageUpload').click();}); if(imgs.length){ cell.querySelector(`img[src="${imgs[0]}"]`)?.addEventListener('click',e=>{e.stopPropagation();showPhysiqueViewer(ds,imgs,0);}); } cell.querySelectorAll('.img-thumb-small[data-date]').forEach(img=>img.addEventListener('click',async e=>{e.stopPropagation();const td=e.target.dataset.date;const arr=await getUserImages(currentUser,'physique_'+td);if(arr.length)showPhysiqueViewer(td,arr,0);})); grid.appendChild(cell); }
+        const textR = innerR + (outerR - innerR) * 0.62;
+        const tx = cx + textR * Math.cos(mid);
+        const ty = cy + textR * Math.sin(mid);
+        ctx.save();
+        ctx.translate(tx, ty);
+        ctx.rotate(mid);
+        const fontSize = count <= 10 ? 13 : (count <= 20 ? 10.5 : (count <= 30 ? 8.5 : 7));
+        ctx.font = `bold ${fontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
+        ctx.fillStyle = '#2a2620';
+        ctx.shadowColor = 'rgba(255,255,255,0.6)';
+        ctx.shadowBlur = 3;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        let text = currentMenus[i].name;
+        if (count > 25 && text.length > 4) text = text.slice(0, 3) + '…';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, innerR, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#d6cfc0';
+      ctx.lineWidth = 3;
+      ctx.stroke();
     }
-    document.getElementById('physiqueImageUpload').addEventListener('change', async function(e){
-      const files=Array.from(e.target.files); if(!files.length) return; const ds=document.getElementById('physiqueTargetDate').value; if(!ds) return;
-      const status=document.getElementById('physiqueUploadStatus'); status.textContent='压缩中...'; const key='physique_'+ds; const exist=await getUserImages(currentUser,key);
-      const proms=files.map(f=>new Promise((resolve,reject)=>{
-        if(f.size>15*1024*1024){reject(new Error('>15MB'));return;} const r=new FileReader(); r.onload=ev=>{const img=new Image();img.onload=()=>{if(img.width>600){const c=document.createElement('canvas');c.width=600;c.height=Math.round(img.height*(600/img.width));c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',0.65));}else resolve(ev.target.result);};img.onerror=()=>resolve(ev.target.result);img.src=ev.target.result;};r.onerror=reject;r.readAsDataURL(f);}));
-      try{const res=await Promise.all(proms);const all=[...exist,...res];await setUserImages(currentUser,key,all);save();renderPhysiquePanel();status.textContent='✅ 完成';setTimeout(()=>status.textContent='',1500);}catch(err){showToast('上传失败');} e.target.value='';
-    });
-    function showPhysiqueViewer(dateStr,images,idx){
-      const modal=document.createElement('div');modal.className='modal';
-      modal.innerHTML=`<div class="modal-content" style="text-align:center;"><p>${dateStr}</p><div class="image-viewer"><img src="${images[idx]}" id="vImg"><div class="image-nav"><button id="prevBtn" ${idx===0?'disabled':''}>◀</button><span>${idx+1}/${images.length}</span><button id="nextBtn" ${idx===images.length-1?'disabled':''}>▶</button></div><div style="display:flex;gap:6px;margin-top:8px;justify-content:center;"><button id="repBtn" class="small">替换</button><button id="delBtn" class="small">删除</button><button id="clsBtn" class="small secondary">关闭</button></div><input type="file" id="repFile" accept="image/*" style="display:none;"></div></div>`;
-      document.body.appendChild(modal); const close=()=>modal.remove(); modal.addEventListener('click',e=>{if(e.target===modal)close();}); document.getElementById('clsBtn').addEventListener('click',close);
-      const update=async()=>{const arr=await getUserImages(currentUser,'physique_'+dateStr);document.getElementById('vImg').src=arr[idx];document.getElementById('prevBtn').disabled=idx===0;document.getElementById('nextBtn').disabled=idx>=arr.length-1;document.querySelector('.image-nav span').textContent=`${idx+1}/${arr.length}`;};
-      document.getElementById('prevBtn').addEventListener('click',()=>{if(idx>0){idx--;update();}}); document.getElementById('nextBtn').addEventListener('click',()=>{if(idx<images.length-1){idx++;update();}});
-      document.getElementById('repBtn').addEventListener('click',()=>document.getElementById('repFile').click());
-      document.getElementById('repFile').addEventListener('change',async function(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async ev=>{const arr=await getUserImages(currentUser,'physique_'+dateStr);arr[idx]=ev.target.result;await setUserImages(currentUser,'physique_'+dateStr,arr);save();update();};reader.readAsDataURL(file);});
-      document.getElementById('delBtn').addEventListener('click',async()=>{const arr=await getUserImages(currentUser,'physique_'+dateStr);arr.splice(idx,1);if(!arr.length)await deleteUserImages(currentUser,'physique_'+dateStr);else await setUserImages(currentUser,'physique_'+dateStr,arr);save();const upd=await getUserImages(currentUser,'physique_'+dateStr);if(upd.length){if(idx>=upd.length)idx=upd.length-1;update();}else{close();renderPhysiquePanel();}});
+
+    function getPointerIndex() {
+      const count = currentMenus.length;
+      if (count === 0) return -1;
+      const sectorAngle = (2 * Math.PI) / count;
+      const pointerAngle = -Math.PI / 2;
+      let diff = pointerAngle - rotationAngle;
+      let norm = ((diff % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+      return Math.floor(norm / sectorAngle) % count;
     }
 
-    // 朋友面板
-    function renderFriendList(){
-      const list=document.getElementById('friendList'); if(!currentUser?.friends.length){ list.innerHTML='<p style="text-align:center;color:#888;">暂无好友</p>'; document.getElementById('friendData').style.display='none'; return; }
-      let h='<h4>好友</h4>'; currentUser.friends.forEach(uid=>{const u=allUsers[uid];h+=`<div class="friend-list-item"><span>${u?escapeHtml(u.username):'未知'} (${uid})</span><div><button class="small viewFriendBtn" data-uid="${uid}">查看</button><button class="small hideFriendBtn">隐藏</button></div></div>`;});
-      list.innerHTML=h; document.querySelectorAll('.viewFriendBtn').forEach(b=>b.addEventListener('click',function(){currentFriendUid=this.dataset.uid;displayFriendReport(currentFriendUid);})); document.querySelectorAll('.hideFriendBtn').forEach(b=>b.addEventListener('click',()=>document.getElementById('friendData').style.display='none'));
-      if(currentFriendUid && currentUser.friends.includes(currentFriendUid)) displayFriendReport(currentFriendUid);
+    function updateCenter(menu = null) {
+      if (menu) {
+        centerEmoji.textContent = menu.emoji;
+        centerHint.textContent = '';
+        resultTag.textContent = '🍽️ ' + menu.name;
+        resultTag.classList.add('show');
+        centerDisplay.style.borderColor = '#b8d9be';
+      } else {
+        centerEmoji.textContent = '🎯';
+        centerHint.textContent = '点击旋转';
+        resultTag.textContent = '🎯 准备转动';
+        resultTag.classList.remove('show');
+        centerDisplay.style.borderColor = '#e0d9ce';
+      }
     }
-    document.getElementById('exportMyDataBtn').addEventListener('click',()=>{if(!currentUser)return;const json=JSON.stringify(currentUser);const encoded=utf8ToBase64(json);navigator.clipboard.writeText(encoded).then(()=>showToast('已复制')).catch(()=>{const ta=document.createElement('textarea');ta.value=encoded;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('已复制');});});
-    document.getElementById('exportMyDataFileBtn').addEventListener('click',()=>{if(!currentUser)return;const blob=new Blob([JSON.stringify(currentUser)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`solo_${currentUser.username}.json`;a.click();});
-    document.getElementById('importFriendDataBtn').addEventListener('click',()=>{const encoded=prompt('粘贴好友数据：');if(!encoded)return;try{const json=base64ToUtf8(encoded);const imp=JSON.parse(json);if(!imp.uid||!imp.username)throw new Error();allUsers[imp.uid]=imp;save();showToast('导入成功');renderFriendList();}catch(e){showToast('格式错误');}});
-    document.getElementById('addFriendBtn').addEventListener('click',()=>{const uid=document.getElementById('friendUidInput').value.trim();if(!uid)return showToast('输入UID');if(uid===currentUser.uid)return showToast('不能添加自己');if(!currentUser.friends.includes(uid)){currentUser.friends.push(uid);save();showToast('已添加');renderFriendList();} currentFriendUid=uid;displayFriendReport(uid);});
-    document.getElementById('refreshFriendDataBtn').addEventListener('click',()=>{if(currentFriendUid)displayFriendReport(currentFriendUid);else showToast('先选择好友');});
-    function displayFriendReport(uid){const u=allUsers[uid];const c=document.getElementById('friendData');if(!u){c.innerHTML='<p>好友暂无数据</p>';c.style.display='block';return;}c.innerHTML=`<h3>${escapeHtml(u.username)} 周报</h3><p>体重记录${u.weightRecords.length}条</p>`;c.style.display='block';}
 
-    // 登录注册
-    document.getElementById('loginBtn').addEventListener('click',()=>{
-      const un=document.getElementById('username').value.trim(), pw=document.getElementById('password').value;
-      if(!un||!pw) return showAuthMsg('请输入用户名密码');
-      const user=Object.values(allUsers).find(u=>u.username===un&&u.password===pw);
-      if(!user) return showAuthMsg('用户名或密码错误');
-      currentUser=user; addLoginHistory(user.username,user.uid); showMain();
-    });
-    document.getElementById('regBtn').addEventListener('click',()=>{
-      const un=document.getElementById('username').value.trim(), pw=document.getElementById('password').value;
-      if(!un||!pw) return showAuthMsg('请输入用户名密码');
-      if(un.length<2) return showAuthMsg('用户名至少2字符');
-      if(pw.length<3) return showAuthMsg('密码至少3位');
-      if(Object.values(allUsers).some(u=>u.username===un)) return showAuthMsg('用户名已存在');
-      const uid=generateUID(); allUsers[uid]={uid,username:un,password:pw,weightRecords:[],weeklyPlans:{},friends:[],customExercises:{}};
-      save(); showAuthMsg('✅ 注册成功！UID: '+uid, false);
-      document.getElementById('username').value=''; document.getElementById('password').value='';
-    });
-    document.getElementById('logoutBtn').addEventListener('click',()=>{
-      currentUser=null; localStorage.removeItem('lastLoggedUID_v2');
-      document.getElementById('auth-screen').classList.remove('hidden');
-      document.getElementById('main-screen').classList.add('hidden');
+    function showRecipe(menu) {
+      if (!menu?.recipe) { recipeCard.classList.remove('active'); return; }
+      recipeName.textContent = menu.name;
+      recipeIngredients.textContent = menu.recipe.ingredients;
+      recipeSeasonings.textContent = menu.recipe.seasonings;
+      recipeSteps.textContent = menu.recipe.steps;
+      recipeCard.classList.add('active');
+      recipeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideRecipe() { recipeCard.classList.remove('active'); }
+
+    function spin() {
+      if (isSpinning) return;
+      refreshMenus();
+      if (currentMenus.length === 0) return;
+
+      rotationAngle = Math.random() * 2 * Math.PI;
+      drawWheel(rotationAngle);
+
+      isSpinning = true;
+      spinBtn.disabled = true;
+      hideRecipe();
+      updateCenter(null);
+      moduleSelector.classList.add('disabled-interaction');
+      countSelector.classList.add('disabled-interaction');
+
+      const count = currentMenus.length;
+      const sectorAngle = (2 * Math.PI) / count;
+      const targetIdx = Math.floor(Math.random() * count);
+      const targetMid = targetIdx * sectorAngle + sectorAngle / 2;
+      const pointerAngle = -Math.PI / 2;
+
+      const startRot = rotationAngle;
+      const targetAbsolute = pointerAngle - targetMid;
+      let needed = ((targetAbsolute - startRot) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+      const extra = (6 + Math.random() * 4) * 2 * Math.PI;
+      const totalDelta = extra + needed;
+      const targetRot = startRot + totalDelta;
+      const duration = 4200 + Math.random() * 1000;
+      const startTime = performance.now();
+
+      function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+      function animate(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        rotationAngle = startRot + totalDelta * easeOutCubic(progress);
+        drawWheel(rotationAngle);
+        if (progress < 1) {
+          animationId = requestAnimationFrame(animate);
+        } else {
+          rotationAngle = targetRot;
+          drawWheel(rotationAngle);
+          finishSpin();
+        }
+      }
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function finishSpin() {
+      isSpinning = false;
+      animationId = null;
+      spinBtn.disabled = false;
+      moduleSelector.classList.remove('disabled-interaction');
+      countSelector.classList.remove('disabled-interaction');
+
+      const actualIndex = getPointerIndex();
+      if (actualIndex >= 0 && actualIndex < currentMenus.length) {
+        const menu = currentMenus[actualIndex];
+        updateCenter(menu);
+        showRecipe(menu);
+      } else {
+        updateCenter(null);
+        hideRecipe();
+      }
+    }
+
+    function resetWheel() {
+      if (isSpinning) return;
+      refreshMenus();
+      rotationAngle = Math.random() * 2 * Math.PI;
+      drawWheel(rotationAngle);
+      updateCenter(null);
+      hideRecipe();
+    }
+
+    function addCustomDish() {
+      const name = newDishName.value.trim();
+      if (!name) { alert('请输入菜名'); return; }
+      const type = classifyDish(name);
+      const emojiMap = { carb: '🍚', protein: '🍗', vitamin: '🥬' };
+      const typeName = { carb: '碳水', protein: '蛋白质', vitamin: '维生素' };
+      MENU_DB.push({
+        name,
+        emoji: emojiMap[type],
+        type,
+        recipe: {
+          ingredients: '按喜好准备主要食材',
+          seasonings: '盐、生抽等基础调料',
+          steps: '1. 食材洗净切配。\n2. 采用少油煎/炒/蒸/煮方式烹饪。\n3. 加入调料调味，出锅享用。'
+        }
+      });
+      newDishName.value = '';
+      alert(`✅ 已添加“${name}” → AI判断为【${typeName[type]}】`);
+      if (currentModule === 'all' || currentModule === type) resetWheel();
+    }
+
+    spinBtn.addEventListener('click', spin);
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' && !isSpinning && document.activeElement === document.body) {
+        e.preventDefault();
+        spin();
+      }
     });
 
-    document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>switchPanel(b.dataset.panel)));
-    const lastUID = localStorage.getItem('lastLoggedUID_v2');
-    if(lastUID && allUsers[lastUID]){ currentUser = allUsers[lastUID]; showMain(); }
-    window.addEventListener('beforeunload', ()=>{ if(currentUser) localStorage.setItem('lastLoggedUID_v2', currentUser.uid); saveAllUsers(); });
-    setInterval(()=>{ if(currentUser) saveAllUsers(); }, 30000);
-    document.addEventListener('touchstart', ()=>{}, {passive: true});
-    console.log('⚡ 我独自升级 - 全功能版已运行');
+    moduleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (isSpinning) return;
+        const module = btn.dataset.module;
+        if (module === currentModule) return;
+        currentModule = module;
+        moduleBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const pool = filterMenusByModule(currentModule);
+        if (currentCount > pool.length) {
+          currentCount = pool.length > 0 ? pool.length : 1;
+          updateCountButtonActive(currentCount);
+        }
+        resetWheel();
+      });
+    });
+
+    countBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (isSpinning) return;
+        const count = parseInt(btn.dataset.count);
+        if (count === currentCount) return;
+        const pool = filterMenusByModule(currentModule);
+        if (count > pool.length) {
+          alert(`当前模块仅有 ${pool.length} 道菜，无法选择 ${count} 个。`);
+          return;
+        }
+        currentCount = count;
+        updateCountButtonActive(count);
+        resetWheel();
+      });
+    });
+
+    addDishBtn.addEventListener('click', addCustomDish);
+
+    function resizeCanvas() {
+      const rect = wheelContainer.getBoundingClientRect();
+      const size = Math.min(rect.width, rect.height);
+      canvas.width = size;
+      canvas.height = size;
+      drawWheel(rotationAngle);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(wheelContainer);
+
+    function init() {
+      currentModule = 'all';
+      moduleBtns.forEach(b => b.classList.remove('active'));
+      document.querySelector('.module-btn[data-module="all"]').classList.add('active');
+      currentCount = 5;
+      updateCountButtonActive(5);
+      resizeCanvas();
+      resetWheel();
+    }
+    init();
   })();
 </script>
 </body>
